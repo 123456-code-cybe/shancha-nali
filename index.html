@@ -1,0 +1,5140 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>山茶.Nali · ROUWELU STUDIO</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Songti SC", "SimSun", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+    background: #ffffff;
+    color: #2c2c2c;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .app { display: flex; height: 100vh; }
+
+  /* 左侧导航栏 */
+  .sidebar {
+    width: 260px;
+    background: #faf8f5;
+    border-right: 1px solid #ebe6de;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    transition: width 0.3s ease, transform 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 50;
+  }
+  .sidebar.collapsed {
+    width: 0;
+    overflow: hidden;
+    border-right: none;
+  }
+  /* 移动端遮罩层 */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 40;
+  }
+  .sidebar-overlay.show {
+    display: block;
+  }
+  .shop-header {
+    padding: 28px 20px;
+    border-bottom: 1px solid #ebe6de;
+    text-align: center;
+  }
+  .shop-logo {
+    width: 72px; height: 72px;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #f0ece6;
+  }
+  .shop-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .shop-name { font-size: 17px; font-weight: 500; color: #2c2c2c; letter-spacing: 2px; }
+  .shop-sub { font-size: 10px; color: #b0a89a; margin-top: 4px; letter-spacing: 3px; font-family: "Times New Roman", serif; }
+
+  .back-home {
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    color: #6b6258;
+    font-size: 14px;
+    border-bottom: 1px solid #ebe6de;
+    transition: all 0.2s;
+  }
+  .back-home:hover { background: #f0ebe3; }
+
+  .nav-section { padding: 8px 0; }
+  .nav-title {
+    padding: 10px 20px 6px;
+    font-size: 11px;
+    color: #b5ada0;
+    letter-spacing: 2px;
+  }
+  .nav-item {
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    color: #6b6258;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { background: #f0ebe3; }
+  .nav-item.active {
+    background: #2c2c2c;
+    color: #fff;
+    border-left-color: #8b7355;
+  }
+  .nav-item .icon { width: 18px; text-align: center; }
+
+  /* 右侧主内容区 - 带水印背景 */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    background: #ffffff;
+    position: relative;
+  }
+  .main::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 550px;
+    height: 550px;
+    background-image: url('logo.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.07;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .main-header {
+    padding: 20px 32px;
+    background: rgba(255,255,255,0.92);
+    border-bottom: 1px solid #ebe6de;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: blur(8px);
+  }
+  .content {
+    position: relative;
+    z-index: 1;
+  }
+  .page {
+    position: relative;
+    z-index: 1;
+  }
+  .page-title {
+    display: flex; align-items: center; gap: 12px;
+  }
+  /* 汉堡菜单按钮 */
+  .menu-toggle {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  .menu-toggle:hover {
+    background: #f5f2ed;
+  }
+  .menu-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #6b6258;
+    border-radius: 1px;
+    transition: all 0.3s;
+  }
+  .back-btn {
+    padding: 6px 14px;
+    background: #fff;
+    border: 1px solid #e0d8ce;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #666;
+  }
+  .back-btn:hover { background: #f5f0ea; }
+  .page-title h2 { font-size: 18px; font-weight: 600; }
+  .header-date { font-size: 13px; color: #9a9080; }
+
+  .content { padding: 24px 32px; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* 卡片通用样式 */
+  .card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border: 1px solid #f0ece6;
+    backdrop-filter: blur(2px);
+    position: relative;
+    z-index: 1;
+  }
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .card-title { font-size: 16px; font-weight: 500; letter-spacing: 1px; }
+
+  /* 按钮样式 */
+  .btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: #2c2c2c;
+    color: #fff;
+  }
+  .btn-primary:hover { background: #1a1a1a; }
+  .btn-secondary {
+    background: #faf8f5;
+    color: #6b6258;
+    border: 1px solid #e5dfd5;
+  }
+  .btn-secondary:hover { background: #f5f2ed; }
+  .btn-danger {
+    background: #fff;
+    color: #b55;
+    border: 1px solid #f0d8d8;
+  }
+  .btn-danger:hover { background: #fef7f7; }
+  .btn-sm { padding: 4px 12px; font-size: 12px; }
+
+  /* 输入框样式 */
+  .input, .select, .textarea {
+    padding: 9px 14px;
+    border: 1px solid #e5dfd5;
+    border-radius: 6px;
+    font-size: 13px;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    color: #2c2c2c;
+  }
+  .input:focus, .select:focus, .textarea:focus {
+    border-color: #8b7355;
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    color: #8b7f70;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .form-row {
+    display: flex; gap: 16px;
+  }
+  .form-row .form-group { flex: 1; }
+
+  /* 表格样式 */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid #f0ece6;
+    font-size: 13px;
+  }
+  th {
+    background: rgba(250, 248, 245, 0.8);
+    font-weight: 500;
+    color: #9a9080;
+    letter-spacing: 0.5px;
+  }
+  tr:hover { background: rgba(252, 251, 250, 0.8); }
+  td { background: rgba(255, 255, 255, 0.6); }
+
+  /* 首页样式 */
+  .home-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    padding: 24px 20px;
+    text-align: center;
+    border: 1px solid #f0ece6;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    backdrop-filter: blur(2px);
+    position: relative;
+    z-index: 1;
+  }
+  .stat-card .stat-num {
+    font-size: 28px;
+    font-weight: 500;
+    color: #2c2c2c;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .stat-card .stat-label {
+    font-size: 12px;
+    color: #9a9080;
+    letter-spacing: 1px;
+  }
+  .home-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+
+  /* 日历样式 */
+  .calendar-toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .calendar-nav {
+    display: flex; gap: 8px;
+  }
+  .week-calendar {
+    display: grid;
+    grid-template-columns: 120px repeat(7, 1fr);
+    gap: 1px;
+    background: #ebe6de;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .cal-header {
+    background: #faf8f5;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 12px;
+    color: #9a9080;
+    letter-spacing: 0.5px;
+  }
+  .cal-header.date-col {
+    text-align: left;
+    padding-left: 16px;
+  }
+  .cal-cell {
+    background: #fff;
+    min-height: 80px;
+    padding: 8px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .cal-cell:hover { background: #fcfbfa; }
+  .cal-cell.date-cell {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #6b6258;
+    display: flex; align-items: center;
+    background: #faf8f5;
+  }
+  .appointment-tag {
+    background: #f5f2ed;
+    color: #6b6258;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 1px solid #ebe6de;
+  }
+  .appointment-tag:hover { background: #efebe4; }
+
+  /* 月历视图 */
+  .month-calendar-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .month-calendar-title {
+    font-size: 18px; font-weight: 600; letter-spacing: 1px;
+  }
+  .month-calendar-nav {
+    display: flex; gap: 8px;
+  }
+  .month-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #ebe6de;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .month-cal-header {
+    background: #faf8f5;
+    padding: 10px 4px;
+    text-align: center;
+    font-size: 12px;
+    color: #9a9080;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+  .month-cal-cell {
+    background: #fff;
+    min-height: 80px;
+    padding: 6px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  .month-cal-cell:hover { background: #fcfbfa; }
+  .month-cal-cell.other-month {
+    background: #faf8f5;
+    color: #d0c8bc;
+  }
+  .month-cal-cell.other-month .cal-date-num { color: #d0c8bc; }
+  .month-cal-cell.other-month .cal-apt-time { color: #d0c8bc; }
+  .month-cal-cell.today .cal-date-num {
+    background: #2c2c2c;
+    color: #fff;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .month-cal-cell.has-appointment .cal-date-num {
+    color: #8b7355;
+    font-weight: 600;
+  }
+  .month-cal-cell.selected {
+    background: #faf6f0;
+    box-shadow: inset 0 0 0 2px #8b7355;
+  }
+  .cal-date-num {
+    font-size: 14px;
+    color: #2c2c2c;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .cal-apt-times {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+  }
+  .cal-apt-time {
+    font-size: 10px;
+    color: #8b7f70;
+    background: #f5f2ed;
+    padding: 2px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+  .cal-apt-more {
+    font-size: 10px;
+    color: #b5ada0;
+    padding: 0 4px;
+  }
+
+  /* 当日预约展开区域 */
+  .day-appointments-expand {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #faf8f5;
+    border-radius: 0 0 8px 8px;
+    margin-top: -1px;
+    border: 1px solid #ebe6de;
+    border-top: none;
+  }
+  .day-appointments-expand.show {
+    max-height: 2000px;
+  }
+  .day-appointments-inner {
+    padding: 16px;
+  }
+  .day-appointments-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c2c2c;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  .apt-card {
+    background: #fff;
+    border: 1px solid #ebe6de;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .apt-card:last-child { margin-bottom: 0; }
+  .apt-card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .apt-card-time {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c2c2c;
+    letter-spacing: 1px;
+  }
+  .apt-card-status {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #f5f2ed;
+    color: #8b7f70;
+  }
+  .apt-card-status.arrived {
+    background: #eef5ee;
+    color: #5a8b5a;
+  }
+  .apt-card-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    margin-bottom: 10px;
+  }
+  .apt-card-info-item {
+    font-size: 13px;
+    color: #6b6258;
+  }
+  .apt-card-info-item .label {
+    color: #9a9080;
+    font-size: 12px;
+    margin-right: 4px;
+  }
+  .apt-card-images {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .apt-card-images img {
+    width: 60px; height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid #ebe6de;
+  }
+  .apt-card-note {
+    font-size: 12px;
+    color: #9a9080;
+    padding: 8px 10px;
+    background: #faf8f5;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .apt-card-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  /* 多图预览 */
+  .image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .image-preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #ebe6de;
+  }
+  .image-preview-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .image-preview-remove {
+    position: absolute;
+    top: 2px; right: 2px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+    padding: 0;
+  }
+  .image-preview-remove:hover { background: rgba(0,0,0,0.7); }
+
+  /* 预约详情多图 */
+  .detail-images-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .detail-images-grid img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ebe6de;
+  }
+
+  /* 模态框 */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 8px;
+    width: 480px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 28px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    border: 1px solid #f0ece6;
+  }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px;
+  }
+  .modal-title { font-size: 17px; font-weight: 500; letter-spacing: 1px; }
+  .modal-close {
+    width: 28px; height: 28px;
+    border: none; background: #faf8f5;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    color: #b5ada0;
+    border: 1px solid #ebe6de;
+  }
+  .modal-close:hover { background: #f5f2ed; }
+  .modal-footer {
+    display: flex; gap: 10px; justify-content: flex-end;
+    margin-top: 24px;
+  }
+
+  /* 搜索框 */
+  .search-bar {
+    display: flex; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .search-bar .input { flex: 1; max-width: 300px; }
+
+  /* 客户卡片列表 */
+  .customer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .customer-card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #f0ece6;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    backdrop-filter: blur(2px);
+    position: relative;
+    z-index: 1;
+  }
+  .customer-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .customer-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: #f5f2ed;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    color: #6b6258;
+    font-weight: 500;
+    margin-bottom: 12px;
+    border: 1px solid #ebe6de;
+  }
+  .customer-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; letter-spacing: 0.5px; }
+  .customer-phone { font-size: 12px; color: #9a9080; margin-bottom: 8px; }
+  .customer-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .customer-tag {
+    padding: 3px 10px;
+    background: #faf8f5;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #8b7f70;
+    border: 1px solid #ebe6de;
+  }
+  .customer-balance {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0ece6;
+    font-size: 13px;
+    color: #2c2c2c;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* 排班表格 */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -4px;
+    padding: 0 4px;
+  }
+  .schedule-table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+  }
+  .schedule-table th, .schedule-table td {
+    border: 1px solid #ebe6de;
+    padding: 0;
+    text-align: center;
+    height: 60px;
+  }
+  .schedule-table th {
+    background: #faf8f5;
+    padding: 10px;
+    font-size: 12px;
+    color: #9a9080;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+  .schedule-table .staff-col {
+    width: 140px;
+    text-align: left;
+    padding: 0 16px;
+    font-size: 13px;
+    color: #6b6258;
+    background: #faf8f5;
+  }
+  .schedule-cell {
+    position: relative;
+    cursor: pointer;
+    min-height: 60px;
+  }
+  .schedule-cell:hover { background: #fcfbfa; }
+  .shift-tag {
+    background: #f5f2ed;
+    color: #6b6258;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin: 4px;
+    position: relative;
+    border: 1px solid #ebe6de;
+  }
+  .shift-tag.morning { background: #fdf5f5; color: #a55; border-color: #f5e0e0; }
+  .shift-tag.full { background: #f5f8fc; color: #557; border-color: #e0e8f0; }
+  .shift-tag .remove-shift {
+    margin-left: 4px;
+    cursor: pointer;
+    color: #b5ada0;
+  }
+  .shift-tag .remove-shift:hover { color: #b55; }
+
+  /* 美甲师管理 */
+  .staff-list { display: flex; flex-direction: column; gap: 10px; }
+  .staff-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px;
+    background: #faf8f5;
+    border-radius: 6px;
+    border: 1px solid #f0ece6;
+  }
+  .staff-info { display: flex; align-items: center; gap: 12px; }
+  .staff-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #2c2c2c;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px;
+    font-weight: 500;
+  }
+  .staff-name { font-size: 14px; font-weight: 500; letter-spacing: 0.5px; }
+  .staff-role { font-size: 11px; color: #9a9080; }
+  .staff-actions { display: flex; gap: 8px; }
+  .staff-salary-info {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #e0d8ce;
+    font-size: 12px;
+    color: #6b6258;
+    line-height: 1.8;
+  }
+  .staff-salary-info .salary-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .staff-salary-info .salary-highlight {
+    color: #2c2c2c;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .staff-salary-detail {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #f0ece6;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .staff-salary-detail.show { display: block; }
+  .staff-salary-detail .detail-title {
+    font-size: 12px;
+    color: #9a9080;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+  .staff-salary-detail .detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 12px;
+    border-bottom: 1px solid #f5f0ea;
+  }
+  .staff-salary-detail .detail-item:last-child { border-bottom: none; }
+  .salary-calc-note {
+    padding: 8px 12px;
+    background: #faf8f5;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #6b6258;
+    margin-top: 4px;
+  }
+
+  /* 统计图表区域 */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stats-card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    padding: 22px 20px;
+    border: 1px solid #f0ece6;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    backdrop-filter: blur(2px);
+    position: relative;
+    z-index: 1;
+  }
+  .stats-card .stats-label {
+    font-size: 12px;
+    color: #9a9080;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .stats-card .stats-value {
+    font-size: 24px;
+    font-weight: 500;
+    color: #2c2c2c;
+    letter-spacing: 1px;
+  }
+  .chart-container {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    border: 1px solid #f0ece6;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    backdrop-filter: blur(2px);
+    position: relative;
+    z-index: 1;
+  }
+  .chart-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  /* 营业额统计 */
+  .revenue-tabs {
+    display: flex; gap: 4px;
+    margin-bottom: 20px;
+    background: #faf8f5;
+    padding: 4px;
+    border-radius: 6px;
+    width: fit-content;
+    border: 1px solid #f0ece6;
+  }
+  .revenue-tab {
+    padding: 8px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #8b7f70;
+    transition: all 0.2s;
+  }
+  .revenue-tab.active {
+    background: #2c2c2c;
+    color: #fff;
+  }
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    height: 200px;
+    padding: 20px 0;
+  }
+  .bar-item {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px;
+  }
+  .bar {
+    width: 100%;
+    max-width: 40px;
+    background: #2c2c2c;
+    border-radius: 2px 2px 0 0;
+    transition: height 0.5s ease;
+    min-height: 4px;
+  }
+  .bar-label { font-size: 11px; color: #9a9080; }
+  .bar-value { font-size: 11px; color: #2c2c2c; font-weight: 500; }
+
+  /* 采购统计 */
+  .purchase-tabs {
+    display: flex; gap: 4px;
+    margin-bottom: 20px;
+    background: #faf8f5;
+    padding: 4px;
+    border-radius: 6px;
+    width: fit-content;
+    border: 1px solid #f0ece6;
+  }
+  .purchase-tab {
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #8b7f70;
+    transition: all 0.2s;
+  }
+  .purchase-tab.active {
+    background: #2c2c2c;
+    color: #fff;
+  }
+
+  /* 客户来源统计 */
+  .source-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .source-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .source-item {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .source-name {
+    width: 60px;
+    font-size: 13px;
+    color: #6b6258;
+    letter-spacing: 0.5px;
+  }
+  .source-bar-bg {
+    flex: 1;
+    height: 24px;
+    background: #faf8f5;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #f0ece6;
+  }
+  .source-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+  .source-bar-fill.xhs { background: #e57373; }
+  .source-bar-fill.douyin { background: #555; }
+  .source-bar-fill.wechat { background: #81c784; }
+  .source-bar-fill.referral { background: #8b7355; }
+  .source-value {
+    width: 60px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2c2c2c;
+  }
+  .pie-chart {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .pie {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: conic-gradient(
+      #e57373 0deg 90deg,
+      #555 90deg 180deg,
+      #81c784 180deg 270deg,
+      #8b7355 270deg 360deg
+    );
+  }
+
+  /* 会员扣卡 */
+  .balance-adjust {
+    display: flex; gap: 10px; align-items: center;
+    margin-top: 14px;
+  }
+  .balance-adjust .input { width: 120px; }
+
+  /* 消费记录 */
+  .record-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #f0ece6;
+    display: flex; justify-content: space-between;
+  }
+  .record-item:last-child { border-bottom: none; }
+  .record-info .record-service { font-size: 13px; color: #2c2c2c; letter-spacing: 0.3px; }
+  .record-info .record-date { font-size: 11px; color: #9a9080; margin-top: 4px; }
+  .record-amount { font-size: 14px; font-weight: 500; color: #2c2c2c; letter-spacing: 0.5px; }
+
+  /* 预约详情 */
+  .appointment-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .nail-image-placeholder {
+    width: 100%;
+    height: 160px;
+    background: #faf8f5;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #9a9080;
+    font-size: 13px;
+    border: 1px dashed #ebe6de;
+  }
+  .upload-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px dashed #d5cdc0;
+    border-radius: 6px;
+    background: #faf8f5;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    color: #8b7f70;
+    margin-top: 10px;
+    transition: all 0.2s;
+  }
+  .upload-btn:hover { background: #f5f2ed; border-color: #c5bdb0; }
+
+  /* 空状态 */
+  .empty-state {
+    text-align: center;
+    padding: 48px;
+    color: #b5ada0;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  /* 标签页切换 */
+  .sub-tabs {
+    display: flex; gap: 4px;
+    margin-bottom: 20px;
+    background: #faf8f5;
+    padding: 4px;
+    border-radius: 6px;
+    width: fit-content;
+    border: 1px solid #f0ece6;
+  }
+  .sub-tab {
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #8b7f70;
+    transition: all 0.2s;
+  }
+  .sub-tab.active {
+    background: #fff;
+    color: #2c2c2c;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  /* 响应式 */
+  @media (max-width: 1200px) {
+    .home-stats { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .home-grid { grid-template-columns: 1fr; }
+  }
+
+  /* 平板端 */
+  @media (max-width: 992px) {
+    .customer-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    .source-stats { grid-template-columns: 1fr; }
+    .appointment-detail { grid-template-columns: 1fr; }
+  }
+
+  /* 手机端 */
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 260px;
+      z-index: 60;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+      transform: translateX(0);
+    }
+    .sidebar.collapsed {
+      width: 260px;
+      transform: translateX(-100%);
+      overflow-y: auto;
+      border-right: 1px solid #ebe6de;
+    }
+    .main {
+      width: 100%;
+    }
+    .main-header {
+      padding: 16px 20px;
+    }
+    .content {
+      padding: 16px;
+    }
+    .card {
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .home-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .stat-card { padding: 16px 12px; }
+    .stat-card .stat-num { font-size: 22px; }
+    .stat-card .stat-label { font-size: 11px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .stats-card { padding: 16px 12px; }
+    .stats-card .stats-value { font-size: 20px; }
+    .stats-card .stats-label { font-size: 11px; }
+    .page-title { gap: 8px; }
+    .page-title #pageTitle { font-size: 16px; }
+    .header-date { display: none; }
+    .menu-toggle { display: flex; }
+    .week-calendar { grid-template-columns: 80px repeat(7, 1fr); }
+    .cal-header { font-size: 10px; padding: 8px 4px; }
+    .cal-cell { min-height: 60px; padding: 4px; }
+    .cal-cell.date-cell { padding: 8px; font-size: 11px; }
+    .appointment-tag { font-size: 9px; padding: 3px 4px; }
+    .month-cal-cell { min-height: 56px; padding: 4px; }
+    .cal-date-num { font-size: 12px; }
+    .cal-apt-time { font-size: 8px; padding: 1px 3px; }
+    .month-cal-cell.today .cal-date-num { width: 22px; height: 22px; font-size: 11px; }
+    .apt-card-info { grid-template-columns: 1fr; gap: 6px; }
+    .apt-card-actions { flex-wrap: wrap; }
+    .image-preview-grid { grid-template-columns: repeat(3, 1fr); }
+    .customer-grid { grid-template-columns: 1fr; }
+    .form-row { flex-direction: column; gap: 0; }
+    .search-bar { flex-direction: column; }
+    .search-bar .input { max-width: 100% !important; }
+    .chart-container { padding: 16px; }
+    .bar-chart { height: 160px; }
+    .modal {
+      width: calc(100% - 32px);
+      margin: 16px;
+      padding: 20px;
+      max-height: calc(100vh - 32px);
+    }
+    .schedule-table .staff-col { width: 80px; padding: 0 8px; font-size: 11px; }
+    .schedule-table th { font-size: 10px; padding: 6px; }
+    .shift-tag { font-size: 9px; padding: 4px 6px; }
+    .balance-adjust { flex-wrap: wrap; }
+    .balance-adjust .input { width: 100% !important; }
+    table { font-size: 12px; }
+    th, td { padding: 8px 6px; font-size: 12px; }
+    .revenue-tabs, .purchase-tabs { flex-wrap: wrap; }
+    .revenue-tab, .purchase-tab { padding: 6px 14px; font-size: 12px; }
+  }
+
+  /* 小屏手机 */
+  @media (max-width: 480px) {
+    .home-stats { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .week-calendar { grid-template-columns: 60px repeat(7, 1fr); }
+    .cal-header { font-size: 9px; }
+    .cal-cell.date-cell { font-size: 10px; padding: 6px; }
+    .schedule-table .staff-col { width: 60px; font-size: 10px; }
+    
+    /* 预约列表卡片式布局 */
+    .appointment-table { display: block; }
+    .appointment-table thead { display: none; }
+    .appointment-table tbody { display: block; }
+    .appointment-table tr { 
+      display: block; 
+      background: #fff;
+      border: 1px solid #ebe6de;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .appointment-table tr:hover { background: #fff; }
+    .appointment-table td { 
+      display: flex; 
+      align-items: center;
+      padding: 5px 0;
+      border: none;
+      font-size: 13px;
+      text-align: left;
+    }
+    .appointment-table td::before { 
+      content: attr(data-label);
+      color: #999;
+      font-size: 12px;
+      min-width: 70px;
+      flex-shrink: 0;
+    }
+    .appointment-table td[data-label="操作"] {
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 10px;
+      margin-top: 6px;
+      border-top: 1px dashed #ebe6de;
+    }
+    .appointment-table td[data-label="操作"]::before { display: none; }
+    .appointment-table td[data-label="价格"] {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    /* 工资列表卡片式布局 */
+    .salary-table { display: block; }
+    .salary-table thead { display: none; }
+    .salary-table tbody { display: block; }
+    .salary-table tr { 
+      display: block; 
+      background: #fff;
+      border: 1px solid #ebe6de;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .salary-table tr:hover { background: #fff; }
+    .salary-table td { 
+      display: flex; 
+      align-items: center;
+      padding: 5px 0;
+      border: none;
+      font-size: 13px;
+      text-align: left;
+    }
+    .salary-table td::before { 
+      content: attr(data-label);
+      color: #999;
+      font-size: 12px;
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+    .salary-table td[data-label="操作"] {
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 10px;
+      margin-top: 6px;
+      border-top: 1px dashed #ebe6de;
+    }
+    .salary-table td[data-label="操作"]::before { display: none; }
+    .salary-table td[data-label="实发金额"] {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  /* 开屏启动页 */
+  .splash-screen {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #faf8f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+  }
+  .splash-screen.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .splash-content {
+    text-align: center;
+  }
+  .splash-logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .splash-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .splash-name {
+    font-size: 22px;
+    font-weight: 500;
+    color: #2c2c2c;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+  }
+  .splash-sub {
+    font-size: 11px;
+    color: #b0a89a;
+    letter-spacing: 4px;
+    font-family: "Times New Roman", serif;
+    margin-bottom: 30px;
+  }
+  .splash-loading {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+  .splash-loading span {
+    width: 8px;
+    height: 8px;
+    background: #8b7355;
+    border-radius: 50%;
+    animation: splashBounce 1.4s ease-in-out infinite both;
+  }
+  .splash-loading span:nth-child(1) { animation-delay: -0.32s; }
+  .splash-loading span:nth-child(2) { animation-delay: -0.16s; }
+  @keyframes splashBounce {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* 数据同步弹窗 */
+  .sync-modal .sync-section {
+    margin-bottom: 20px;
+  }
+  .sync-modal .sync-section-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c2c2c;
+    margin-bottom: 10px;
+  }
+  .sync-modal .sync-code-display {
+    background: #faf8f5;
+    border: 1px solid #ebe6de;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    color: #666;
+    word-break: break-all;
+    max-height: 120px;
+    overflow-y: auto;
+    font-family: monospace;
+    margin-bottom: 10px;
+  }
+  .sync-modal .sync-input {
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid #e0d8ce;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    resize: vertical;
+    font-family: monospace;
+  }
+  .sync-modal .sync-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .sync-modal .sync-buttons .btn {
+    flex: 1;
+  }
+  .sync-modal .sync-tips {
+    background: #fff8f0;
+    border: 1px solid #f0e4d4;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    color: #8b7355;
+    line-height: 1.8;
+  }
+  .sync-modal .sync-tips ol {
+    padding-left: 18px;
+    margin: 0;
+  }
+  .sync-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    background: #f5f2ed;
+    border-radius: 8px;
+    padding: 4px;
+  }
+  .sync-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    color: #999;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .sync-tab.active {
+    background: #fff;
+    color: #2c2c2c;
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+</style>
+</head>
+<body>
+<!-- 开屏启动页 -->
+<div class="splash-screen" id="splashScreen">
+  <div class="splash-content">
+    <div class="splash-logo">
+      <img src="logo.jpg" alt="山茶.Nali">
+    </div>
+    <div class="splash-name">山茶.Nali</div>
+    <div class="splash-sub">ROUWELU STUDIO</div>
+    <div class="splash-loading">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+<div class="app">
+  <!-- 移动端遮罩层 -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <!-- 左侧导航栏 -->
+  <div class="sidebar" id="sidebar">
+    <div class="shop-header">
+      <div class="shop-logo"><img src="logo.jpg" alt="ROUWELU"></div>
+      <div class="shop-name">山茶.Nali</div>
+      <div class="shop-sub">ROUWELU STUDIO</div>
+    </div>
+    <div class="back-home" onclick="navigateTo('home')">
+      <span class="icon">⌂</span>
+      <span>返回工作台首页</span>
+    </div>
+    <div class="nav-section">
+      <div class="nav-title">概览</div>
+      <div class="nav-item active" data-page="home" onclick="navigateTo('home')">
+        <span class="icon">▦</span>
+        <span>工作台首页</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-title">客源 · 预约</div>
+      <div class="nav-item" data-page="appointment" onclick="navigateTo('appointment')">
+        <span class="icon">▤</span>
+        <span>预约管理</span>
+      </div>
+      <div class="nav-item" data-page="newAppointment" onclick="navigateTo('newAppointment')">
+        <span class="icon">⊙</span>
+        <span>新建预约</span>
+      </div>
+      <div class="nav-item" data-page="customers" onclick="navigateTo('customers')">
+        <span class="icon">⚇</span>
+        <span>顾客档案</span>
+      </div>
+      <div class="nav-item" data-page="newCustomer" onclick="navigateTo('newCustomer')">
+        <span class="icon">☺</span>
+        <span>新增顾客</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-title">运营 · 排班</div>
+      <div class="nav-item" data-page="schedule" onclick="navigateTo('schedule')">
+        <span class="icon">▥</span>
+        <span>排班管理</span>
+      </div>
+      <div class="nav-item" data-page="memberCard" onclick="navigateTo('memberCard')">
+        <span class="icon">▢</span>
+        <span>会员扣卡</span>
+      </div>
+      <div class="nav-item" data-page="revenue" onclick="navigateTo('revenue')">
+        <span class="icon">₵</span>
+        <span>营业额统计</span>
+      </div>
+      <div class="nav-item" data-page="purchase" onclick="navigateTo('purchase')">
+        <span class="icon">☰</span>
+        <span>采购统计</span>
+      </div>
+      <div class="nav-item" data-page="expenses" onclick="navigateTo('expenses')">
+        <span class="icon">¥</span>
+        <span>运营成本</span>
+      </div>
+      <div class="nav-item" data-page="ledger" onclick="navigateTo('ledger')">
+        <span class="icon">▦</span>
+        <span>台账管理</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-title">营销 · 数据</div>
+      <div class="nav-item" data-page="sourceStats" onclick="navigateTo('sourceStats')">
+        <span class="icon">⤴</span>
+        <span>客户来源统计</span>
+      </div>
+    </div>
+    <div class="nav-section" style="margin-top:auto; padding-top:8px; border-top:1px solid #ebe6de;">
+      <div class="nav-item" onclick="openSyncModal()">
+        <span class="icon">⇄</span>
+        <span>数据同步</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧主内容区 -->
+  <div class="main">
+    <div class="main-header">
+      <div class="page-title">
+        <button class="menu-toggle" onclick="toggleSidebar()" title="展开/收起导航">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <span id="pageTitle">工作台首页</span>
+      </div>
+      <div class="header-date" id="headerDate"></div>
+    </div>
+    <div class="content">
+
+      <!-- 首页 -->
+      <div class="page active" id="page-home">
+        <div class="home-stats">
+          <div class="stat-card">
+            <div class="stat-num" id="todayAppointments">0</div>
+            <div class="stat-label">今日预约</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="todayRevenue">¥0</div>
+            <div class="stat-label">今日营业额</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="totalCustomers">0</div>
+            <div class="stat-label">会员总数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="monthRevenue">¥0</div>
+            <div class="stat-label">本月营业额</div>
+          </div>
+        </div>
+        <div class="home-grid">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">今日预约</div>
+              <button class="btn btn-secondary btn-sm" onclick="navigateTo('appointment')">查看全部</button>
+            </div>
+            <div id="todayAppointmentList">
+              <div class="empty-state">暂无今日预约</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">快捷操作</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <button class="btn btn-primary" onclick="navigateTo('newAppointment')">+ 新建预约</button>
+              <button class="btn btn-secondary" onclick="navigateTo('newCustomer')">+ 新增顾客</button>
+              <button class="btn btn-secondary" onclick="navigateTo('schedule')">排班管理</button>
+              <button class="btn btn-secondary" onclick="navigateTo('memberCard')">会员扣卡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 预约管理 -->
+      <div class="page" id="page-appointment">
+        <div class="card">
+          <div class="month-calendar-header">
+            <div class="month-calendar-title" id="monthTitle">8月</div>
+            <div class="month-calendar-nav">
+              <button class="btn btn-secondary btn-sm" onclick="changeMonth(-1)">上一月</button>
+              <button class="btn btn-secondary btn-sm" onclick="goToThisMonth()">本月</button>
+              <button class="btn btn-secondary btn-sm" onclick="changeMonth(1)">下一月</button>
+            </div>
+          </div>
+          <div class="month-calendar" id="monthCalendar">
+            <!-- 月历内容JS生成 -->
+          </div>
+        </div>
+        <div class="day-appointments-expand" id="dayAppointmentsExpand">
+          <div class="day-appointments-inner" id="dayAppointmentsContent">
+            <!-- 当日预约详情JS生成 -->
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">全部待到达预约</div>
+            <button class="btn btn-primary btn-sm" onclick="navigateTo('newAppointment')">+ 新建预约</button>
+          </div>
+          <div id="appointmentList">
+            <div class="empty-state">暂无预约记录</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 新建/编辑预约 -->
+      <div class="page" id="page-newAppointment">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title" id="newAppointmentTitle">新建预约</div>
+          </div>
+          <form id="newAppointmentForm" onsubmit="saveAppointment(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">顾客姓名 *</label>
+                <input type="text" class="input" id="aptCustomerName" required style="width:100%" placeholder="请输入顾客姓名">
+              </div>
+              <div class="form-group">
+                <label class="form-label">联系电话 *</label>
+                <input type="tel" class="input" id="aptCustomerPhone" required style="width:100%" placeholder="请输入联系电话">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">预约日期 *</label>
+                <input type="date" class="input" id="aptDate" required style="width:100%">
+              </div>
+              <div class="form-group">
+                <label class="form-label">开始时间 *</label>
+                <input type="time" class="input" id="aptTime" required style="width:100%">
+              </div>
+              <div class="form-group">
+                <label class="form-label">结束时间</label>
+                <input type="time" class="input" id="aptEndTime" style="width:100%" placeholder="可选">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">手部美甲 *</label>
+                <select class="select" id="aptNailType" required style="width:100%" onchange="updateServiceText()">
+                  <option value="">请选择类型</option>
+                  <option value="本甲">本甲</option>
+                  <option value="本甲+建构">本甲+建构</option>
+                  <option value="半贴">半贴</option>
+                  <option value="半贴+建构">半贴+建构</option>
+                  <option value="浅贴">浅贴</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">款式 *</label>
+                <select class="select" id="aptStyle" required style="width:100%" onchange="updateServiceText()">
+                  <option value="">请选择款式</option>
+                  <option value="纯色">纯色</option>
+                  <option value="极致单色">极致单色</option>
+                  <option value="简单款式">简单款式</option>
+                  <option value="复杂款式">复杂款式</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">卸甲</label>
+                <select class="select" id="aptNailRemoval" style="width:100%" onchange="updateServiceText()">
+                  <option value="无">无</option>
+                  <option value="本甲卸甲">本甲卸甲</option>
+                  <option value="甲片卸甲">甲片卸甲</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">价格 (元) *</label>
+                <input type="number" class="input" id="aptPrice" required style="width:100%" placeholder="请输入价格">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">顾客来源</label>
+                <select class="select" id="aptSource" style="width:100%">
+                  <option value="小红书">小红书</option>
+                  <option value="抖音">抖音</option>
+                  <option value="微信">微信</option>
+                  <option value="转介">转介</option>
+                  <option value="其他">其他</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">指定美甲师</label>
+                <select class="select" id="aptStaff" style="width:100%">
+                  <option value="">不指定</option>
+                </select>
+              </div>
+              <div class="form-group" id="memberCardGroup" style="display:none;">
+                <label class="form-label">会员卡抵扣</label>
+                <div style="display:flex; align-items:center; gap:10px; padding-top:8px;">
+                  <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13px;">
+                    <input type="checkbox" id="aptUseMemberCard" onchange="updateMemberCardInfo()">
+                    <span>使用会员卡抵扣</span>
+                  </label>
+                  <span id="memberBalanceInfo" style="font-size:12px; color:#999;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">款式图片</label>
+                <div class="image-preview-grid" id="nailImagePreviewGrid">
+                  <!-- 图片预览JS生成 -->
+                </div>
+                <div class="upload-btn" onclick="document.getElementById('nailImageInput').click()">上传款式图片</div>
+                <input type="file" id="nailImageInput" accept="image/*" multiple style="display:none" onchange="previewNailImages(event)">
+              </div>
+              <div class="form-group">
+                <label class="form-label">备注</label>
+                <textarea class="textarea" id="aptNote" rows="5" style="width:100%; resize:vertical;" placeholder="请输入备注信息"></textarea>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+              <button type="button" class="btn btn-secondary" onclick="cancelAppointmentEdit()">取消</button>
+              <button type="submit" class="btn btn-primary">保存预约</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 顾客档案 -->
+      <div class="page" id="page-customers">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">顾客档案</div>
+            <button class="btn btn-primary btn-sm" onclick="navigateTo('newCustomer')">+ 新增顾客</button>
+          </div>
+          <div class="search-bar">
+            <input type="text" class="input" id="customerSearch" placeholder="搜索姓名或联系电话..." oninput="searchCustomers()">
+          </div>
+          <div class="customer-grid" id="customerGrid">
+            <!-- 顾客卡片JS生成 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增顾客 -->
+      <div class="page" id="page-newCustomer">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">新增顾客</div>
+          </div>
+          <form id="newCustomerForm" onsubmit="saveCustomer(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">顾客姓名 *</label>
+                <input type="text" class="input" id="custName" required style="width:100%" placeholder="请输入顾客姓名">
+              </div>
+              <div class="form-group">
+                <label class="form-label">联系电话 *</label>
+                <input type="tel" class="input" id="custPhone" required style="width:100%" placeholder="请输入联系电话">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">年龄</label>
+                <input type="number" class="input" id="custAge" style="width:100%" placeholder="请输入年龄">
+              </div>
+              <div class="form-group">
+                <label class="form-label">客户来源</label>
+                <select class="select" id="custSource" style="width:100%">
+                  <option value="小红书">小红书</option>
+                  <option value="抖音">抖音</option>
+                  <option value="微信">微信</option>
+                  <option value="转介">转介</option>
+                  <option value="其他">其他</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">风格偏好</label>
+              <input type="text" class="input" id="custStyle" style="width:100%" placeholder="如：简约、法式、可爱、暗黑等">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">会员卡余额 (元)</label>
+                <input type="number" class="input" id="custBalance" style="width:100%" value="0" placeholder="请输入初始余额">
+              </div>
+              <div class="form-group">
+                <label class="form-label">首次消费 (元)</label>
+                <input type="number" class="input" id="custFirstSpend" style="width:100%" value="0" placeholder="首次消费金额">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">备注</label>
+              <textarea class="textarea" id="custNote" rows="3" style="width:100%; resize:vertical;" placeholder="其他备注信息"></textarea>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+              <button type="button" class="btn btn-secondary" onclick="navigateTo('customers')">取消</button>
+              <button type="submit" class="btn btn-primary">保存顾客</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 排班管理 -->
+      <div class="page" id="page-schedule">
+        <div class="card">
+          <div class="calendar-toolbar">
+            <div style="font-size: 16px; font-weight: 600;" id="scheduleWeekText">本周排班</div>
+            <div class="calendar-nav">
+              <button class="btn btn-secondary btn-sm" onclick="changeScheduleWeek(-1)">上一周</button>
+              <button class="btn btn-secondary btn-sm" onclick="changeScheduleWeek(1)">下一周</button>
+              <button class="btn btn-primary btn-sm" onclick="saveSchedule()">保存排班</button>
+            </div>
+          </div>
+          <p style="font-size: 12px; color: #999; margin-bottom: 12px;">点击单元格添加班次（左右滑动查看更多）</p>
+          <div class="table-scroll">
+          <table class="schedule-table" id="scheduleTable">
+            <thead>
+              <tr id="scheduleHeader">
+                <!-- JS生成 -->
+              </tr>
+            </thead>
+            <tbody id="scheduleBody">
+              <!-- JS生成 -->
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">美甲师管理</div>
+            <button class="btn btn-primary btn-sm" onclick="showAddStaffModal()">+ 添加人员</button>
+          </div>
+          <div class="staff-list" id="staffList">
+            <!-- JS生成 -->
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">工资发放记录</div>
+            <button class="btn btn-primary btn-sm" onclick="showAddSalaryModal()">+ 发放工资</button>
+          </div>
+          <div id="salaryList">
+            <!-- JS生成 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 会员扣卡 -->
+      <div class="page" id="page-memberCard">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">会员扣卡</div>
+          </div>
+          <div class="search-bar">
+            <input type="text" class="input" id="memberSearch" placeholder="搜索姓名或联系电话..." oninput="searchMembers()">
+          </div>
+          <div id="memberSearchResults">
+            <div class="empty-state">请输入姓名或电话搜索会员</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 营业额统计 -->
+      <div class="page" id="page-revenue">
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-label">今日营业额</div>
+            <div class="stats-value" id="statTodayRevenue">¥0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">本周营业额</div>
+            <div class="stats-value" id="statWeekRevenue">¥0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">本月营业额</div>
+            <div class="stats-value" id="statMonthRevenue">¥0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">本年营业额</div>
+            <div class="stats-value" id="statYearRevenue">¥0</div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div class="card-header" style="margin-bottom: 16px;">
+            <div class="chart-title">营业额趋势</div>
+          </div>
+          <div class="revenue-tabs">
+            <div class="revenue-tab active" onclick="switchRevenueTab('day')">日</div>
+            <div class="revenue-tab" onclick="switchRevenueTab('week')">周</div>
+            <div class="revenue-tab" onclick="switchRevenueTab('month')">月</div>
+            <div class="revenue-tab" onclick="switchRevenueTab('year')">年</div>
+          </div>
+          <div class="bar-chart" id="revenueChart">
+            <!-- JS生成 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 采购统计 -->
+      <div class="page" id="page-purchase">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">采购统计</div>
+            <button class="btn btn-primary btn-sm" onclick="showAddPurchaseModal()">+ 添加采购</button>
+          </div>
+          <div class="purchase-tabs">
+            <div class="purchase-tab active" onclick="switchPurchaseTab('tools')">工具类</div>
+            <div class="purchase-tab" onclick="switchPurchaseTab('gel')">色胶类</div>
+            <div class="purchase-tab" onclick="switchPurchaseTab('material')">素材类</div>
+          </div>
+          <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="stats-card">
+              <div class="stats-label">本月采购总额</div>
+              <div class="stats-value" id="purchaseMonthTotal">¥0</div>
+            </div>
+            <div class="stats-card">
+              <div class="stats-label">本年采购总额</div>
+              <div class="stats-value" id="purchaseYearTotal">¥0</div>
+            </div>
+            <div class="stats-card">
+              <div class="stats-label">采购笔数</div>
+              <div class="stats-value" id="purchaseCount">0</div>
+            </div>
+          </div>
+          <div id="purchaseList">
+            <div class="empty-state">暂无采购记录</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 运营成本 -->
+      <div class="page" id="page-expenses">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">运营成本管理</div>
+            <button class="btn btn-primary btn-sm" onclick="showAddExpenseModal()">+ 添加成本</button>
+          </div>
+          <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="stats-card">
+              <div class="stats-label">本月成本合计</div>
+              <div class="stats-value" id="expenseMonthTotal">¥0</div>
+            </div>
+            <div class="stats-card">
+              <div class="stats-label">本年成本合计</div>
+              <div class="stats-value" id="expenseYearTotal">¥0</div>
+            </div>
+          </div>
+          <div id="expenseList">
+            <div class="empty-state">暂无成本记录</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 台账管理 -->
+      <div class="page" id="page-ledger">
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-label">今日净利润</div>
+            <div class="stats-value" id="ledgerTodayProfit">¥0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">本月净利润</div>
+            <div class="stats-value" id="ledgerMonthProfit">¥0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">本年净利润</div>
+            <div class="stats-value" id="ledgerYearProfit">¥0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">累计净利润</div>
+            <div class="stats-value" id="ledgerTotalProfit">¥0</div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div class="card-header" style="margin-bottom: 16px;">
+            <div class="chart-title">净利润趋势</div>
+          </div>
+          <div class="revenue-tabs">
+            <div class="revenue-tab active" onclick="switchLedgerTab('day')">日</div>
+            <div class="revenue-tab" onclick="switchLedgerTab('week')">周</div>
+            <div class="revenue-tab" onclick="switchLedgerTab('month')">月</div>
+            <div class="revenue-tab" onclick="switchLedgerTab('year')">年</div>
+          </div>
+          <div class="bar-chart" id="ledgerChart">
+            <!-- JS生成 -->
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">同比环比对比</div>
+          </div>
+          <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="stats-card">
+              <div class="stats-label">本月 vs 上月</div>
+              <div class="stats-value" id="ledgerMonthCompare" style="font-size: 20px;">¥0</div>
+              <div id="ledgerMonthCompareRate" style="font-size:12px; margin-top:4px;">--</div>
+            </div>
+            <div class="stats-card">
+              <div class="stats-label">本年 vs 去年</div>
+              <div class="stats-value" id="ledgerYearCompare" style="font-size: 20px;">¥0</div>
+              <div id="ledgerYearCompareRate" style="font-size:12px; margin-top:4px;">--</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">收支明细表</div>
+          </div>
+          <div class="search-bar">
+            <input type="date" class="input" id="ledgerStartDate" onchange="renderLedgerDetail()">
+            <span style="align-self:center; color:#999;">至</span>
+            <input type="date" class="input" id="ledgerEndDate" onchange="renderLedgerDetail()">
+          </div>
+          <div id="ledgerDetail">
+            <!-- JS生成 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 客户来源统计 -->
+      <div class="page" id="page-sourceStats">
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-label">总客户数</div>
+            <div class="stats-value" id="sourceTotal">0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">小红书来源</div>
+            <div class="stats-value" id="sourceXhs">0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">抖音来源</div>
+            <div class="stats-value" id="sourceDouyin">0</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">微信/转介</div>
+            <div class="stats-value" id="sourceWechat">0</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom: 20px;">客户来源分布</div>
+          <div class="source-stats">
+            <div class="source-chart" id="sourceChartBars">
+              <!-- JS生成 -->
+            </div>
+            <div class="pie-chart">
+              <div class="pie" id="sourcePie"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom: 16px;">来源明细</div>
+          <table>
+            <thead>
+              <tr>
+                <th>来源渠道</th>
+                <th>客户数量</th>
+                <th>占比</th>
+              </tr>
+            </thead>
+            <tbody id="sourceDetailTable">
+              <!-- JS生成 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 添加美甲师模态框 -->
+<div class="modal-overlay" id="addStaffModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="addStaffModalTitle">添加美甲师</div>
+      <button class="modal-close" onclick="closeModal('addStaffModal')">×</button>
+    </div>
+    <form onsubmit="addStaff(event)">
+      <div class="form-group">
+        <label class="form-label">姓名 *</label>
+        <input type="text" class="input" id="staffName" required style="width:100%" placeholder="请输入姓名">
+      </div>
+      <div class="form-group">
+        <label class="form-label">职位</label>
+        <select class="select" id="staffRole" style="width:100%">
+          <option value="美甲师">美甲师</option>
+          <option value="美睫师">美睫师</option>
+          <option value="店长">店长</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">联系电话</label>
+        <input type="tel" class="input" id="staffPhone" style="width:100%" placeholder="请输入联系电话">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">底薪 (元)</label>
+          <input type="number" class="input" id="staffBaseSalary" style="width:100%" min="0" step="1" value="0" placeholder="请输入底薪">
+        </div>
+        <div class="form-group">
+          <label class="form-label">提成比例 (%)</label>
+          <input type="number" class="input" id="staffCommissionRate" style="width:100%" min="0" max="100" step="1" value="30" placeholder="30">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('addStaffModal')">取消</button>
+        <button type="submit" class="btn btn-primary" id="addStaffSubmitBtn">添加</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 添加班次模态框 -->
+<div class="modal-overlay" id="addShiftModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">添加班次</div>
+      <button class="modal-close" onclick="closeModal('addShiftModal')">×</button>
+    </div>
+    <form onsubmit="addShift(event)">
+      <div class="form-group">
+        <label class="form-label">班次类型</label>
+        <select class="select" id="shiftType" style="width:100%" onchange="updateShiftTime()">
+          <option value="morning">早班 (09:00-14:00)</option>
+          <option value="afternoon">中班 (13:00-18:00)</option>
+          <option value="full">全天 (09:00-21:00)</option>
+          <option value="custom">自定义</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">开始时间</label>
+          <input type="time" class="input" id="shiftStart" style="width:100%" value="09:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">结束时间</label>
+          <input type="time" class="input" id="shiftEnd" style="width:100%" value="14:00">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('addShiftModal')">取消</button>
+        <button type="submit" class="btn btn-primary">添加</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 添加采购模态框 -->
+<div class="modal-overlay" id="addPurchaseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">添加采购</div>
+      <button class="modal-close" onclick="closeModal('addPurchaseModal')">×</button>
+    </div>
+    <form onsubmit="addPurchase(event)">
+      <div class="form-group">
+        <label class="form-label">采购分类</label>
+        <select class="select" id="purchaseCategory" style="width:100%">
+          <option value="tools">工具类</option>
+          <option value="gel">色胶类</option>
+          <option value="material">素材类</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">物品名称 *</label>
+        <input type="text" class="input" id="purchaseName" required style="width:100%" placeholder="请输入物品名称">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">数量</label>
+          <input type="number" class="input" id="purchaseQty" style="width:100%" value="1" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">单价 (元)</label>
+          <input type="number" class="input" id="purchasePrice" style="width:100%" value="0" step="0.01">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">采购日期</label>
+        <input type="date" class="input" id="purchaseDate" style="width:100%">
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <textarea class="textarea" id="purchaseNote" rows="2" style="width:100%; resize:vertical;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('addPurchaseModal')">取消</button>
+        <button type="submit" class="btn btn-primary">添加</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 添加工资模态框 -->
+<div class="modal-overlay" id="addSalaryModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">发放工资</div>
+      <button class="modal-close" onclick="closeModal('addSalaryModal')">×</button>
+    </div>
+    <form onsubmit="addSalary(event)">
+      <div class="form-group">
+        <label class="form-label">美甲师 *</label>
+        <select class="select" id="salaryStaff" required style="width:100%" onchange="updateSalaryCalc()">
+          <!-- JS生成 -->
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">发放月份 *</label>
+          <input type="month" class="input" id="salaryMonth" required style="width:100%" onchange="updateSalaryCalc()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">实发金额 (元) *</label>
+          <input type="number" class="input" id="salaryAmount" required style="width:100%" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="salary-calc-note" id="salaryCalcNote">
+        底薪 ¥0 + 提成 ¥0 = ¥0
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <textarea class="textarea" id="salaryNote" rows="2" style="width:100%; resize:vertical;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('addSalaryModal')">取消</button>
+        <button type="submit" class="btn btn-primary">确认发放</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 添加运营成本模态框 -->
+<div class="modal-overlay" id="addExpenseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">添加运营成本</div>
+      <button class="modal-close" onclick="closeModal('addExpenseModal')">×</button>
+    </div>
+    <form onsubmit="addExpense(event)">
+      <div class="form-group">
+        <label class="form-label">成本类别 *</label>
+        <select class="select" id="expenseCategory" required style="width:100%">
+          <option value="房租">房租</option>
+          <option value="水电">水电</option>
+          <option value="物料采购">物料采购</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">金额 (元) *</label>
+          <input type="number" class="input" id="expenseAmount" required style="width:100%" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">日期 *</label>
+          <input type="date" class="input" id="expenseDate" required style="width:100%">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <textarea class="textarea" id="expenseNote" rows="2" style="width:100%; resize:vertical;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('addExpenseModal')">取消</button>
+        <button type="submit" class="btn btn-primary">添加</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 顾客详情模态框 -->
+<div class="modal-overlay" id="customerDetailModal">
+  <div class="modal" style="width: 560px;">
+    <div class="modal-header">
+      <div class="modal-title">顾客详情</div>
+      <button class="modal-close" onclick="closeModal('customerDetailModal')">×</button>
+    </div>
+    <div id="customerDetailContent">
+      <!-- JS生成 -->
+    </div>
+  </div>
+</div>
+
+<!-- 预约详情模态框 -->
+<div class="modal-overlay" id="appointmentDetailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">预约详情</div>
+      <button class="modal-close" onclick="closeModal('appointmentDetailModal')">×</button>
+    </div>
+    <div id="appointmentDetailContent">
+      <!-- JS生成 -->
+    </div>
+  </div>
+</div>
+
+<!-- 数据同步弹窗 -->
+<div class="modal-overlay" id="syncModal">
+  <div class="modal sync-modal" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-title">▤ 数据同步</div>
+      <button class="modal-close" onclick="closeModal('syncModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:#666; margin-bottom:16px; line-height:1.6;">
+        将当前设备的数据生成同步码，或输入其他设备的同步码来恢复数据。<br>
+        多台设备使用同一个同步码即可保持数据一致。
+      </p>
+      <div class="sync-tabs">
+        <div class="sync-tab active" onclick="switchSyncTab('export')" id="syncTabExport">生成同步码</div>
+        <div class="sync-tab" onclick="switchSyncTab('import')" id="syncTabImport">输入同步码</div>
+      </div>
+      
+      <!-- 导出同步码 -->
+      <div id="syncExportSection">
+        <div class="sync-section">
+          <div class="sync-section-title">我的同步码</div>
+          <div class="sync-code-display" id="syncCodeDisplay">点击下方按钮生成同步码</div>
+          <div class="sync-buttons">
+            <button class="btn btn-primary" onclick="generateSyncCode()">生成同步码</button>
+            <button class="btn btn-secondary" onclick="copySyncCode()">复制同步码</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 导入同步码 -->
+      <div id="syncImportSection" style="display:none;">
+        <div class="sync-section">
+          <div class="sync-section-title">粘贴同步码</div>
+          <textarea class="sync-input" id="syncCodeInput" placeholder="请在此处粘贴从其他设备复制的同步码..."></textarea>
+          <div class="sync-buttons">
+            <button class="btn btn-secondary" onclick="clearSyncInput()">清空</button>
+            <button class="btn btn-primary" onclick="importSyncCode()">导入数据</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="sync-tips">
+        <strong>使用说明：</strong>
+        <ol>
+          <li>首次使用在旧设备点「生成同步码」，复制保存</li>
+          <li>在新设备点「输入同步码」，粘贴后导入</li>
+          <li>每次操作数据后建议重新生成同步码</li>
+          <li>同步码包含所有数据，请妥善保管</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== 数据存储 ====================
+const STORAGE_KEYS = {
+  CUSTOMERS: 'nail_customers',
+  APPOINTMENTS: 'nail_appointments',
+  STAFF: 'nail_staff',
+  SCHEDULE: 'nail_schedule',
+  PURCHASES: 'nail_purchases',
+  EXPENSES: 'nail_expenses',
+  SALARIES: 'nail_salaries'
+};
+
+function loadData(key) {
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : [];
+}
+
+function saveData(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+// 初始化示例数据
+function initSampleData() {
+  // 数据归零 - 不创建任何示例数据
+  // 如果需要清空已有数据，请在浏览器控制台执行: localStorage.clear()
+}
+
+// ==================== 页面导航 ====================
+const pageTitles = {
+  home: '工作台首页',
+  appointment: '预约管理',
+  newAppointment: '新建预约',
+  customers: '顾客档案',
+  newCustomer: '新增顾客',
+  schedule: '排班管理',
+  memberCard: '会员扣卡',
+  revenue: '营业额统计',
+  purchase: '采购统计',
+  expenses: '运营成本',
+  ledger: '台账管理',
+  sourceStats: '客户来源统计'
+};
+
+let currentPage = 'home';
+
+function navigateTo(page) {
+  // 离开新建/编辑预约页时重置编辑状态
+  if (currentPage === 'newAppointment' && page !== 'newAppointment') {
+    editingAppointmentId = null;
+    nailImages = [];
+  }
+  
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  
+  const pageEl = document.getElementById('page-' + page);
+  if (pageEl) pageEl.classList.add('active');
+  
+  const navItem = document.querySelector('.nav-item[data-page="' + page + '"]');
+  if (navItem) navItem.classList.add('active');
+  
+  document.getElementById('pageTitle').textContent = pageTitles[page] || '';
+  
+  // 移动端点击导航后自动收起侧边栏
+  if (isMobile && sidebarState === 'expanded') {
+    toggleSidebar();
+  }
+  
+  currentPage = page;
+  
+  // 页面特定初始化
+  if (page === 'home') renderHome();
+  if (page === 'appointment') renderAppointments();
+  if (page === 'customers') renderCustomers();
+  if (page === 'schedule') renderSchedule();
+  if (page === 'revenue') renderRevenue();
+  if (page === 'purchase') renderPurchases();
+  if (page === 'expenses') renderExpenses();
+  if (page === 'ledger') renderLedger();
+  if (page === 'sourceStats') renderSourceStats();
+  if (page === 'newAppointment') initNewAppointmentForm();
+}
+
+// ==================== 工具函数 ====================
+function formatDate(date) {
+  const d = new Date(date);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + day;
+}
+
+function getWeekDates(baseDate) {
+  const d = new Date(baseDate);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // 周一为第一天
+  const monday = new Date(d.setDate(diff));
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + i);
+    dates.push(date);
+  }
+  return dates;
+}
+
+function getWeekDayName(date) {
+  const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+  return days[date.getDay()];
+}
+
+// ==================== 首页 ====================
+function renderHome() {
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  const today = formatDate(new Date());
+  
+  const todayApts = appointments.filter(a => a.date === today);
+  // 今日营业额：已到达的服务收入 + 今日会员充值
+  const todayService = getServiceRevenue(today, today);
+  const todayRecharge = getRechargeRevenue(today, today);
+  const todayRevenue = todayService + todayRecharge;
+  
+  const now = new Date();
+  const monthStartStr = formatDate(new Date(now.getFullYear(), now.getMonth(), 1));
+  const monthService = getServiceRevenue(monthStartStr, '9999-12-31');
+  const monthRecharge = getRechargeRevenue(monthStartStr, '9999-12-31');
+  const monthRevenue = monthService + monthRecharge;
+  
+  document.getElementById('todayAppointments').textContent = todayApts.length;
+  document.getElementById('todayRevenue').textContent = '¥' + todayRevenue;
+  document.getElementById('totalCustomers').textContent = customers.length;
+  document.getElementById('monthRevenue').textContent = '¥' + monthRevenue;
+  
+  // 今日预约列表（只显示待到达的）
+  const todayPending = todayApts.filter(a => a.status !== 'arrived');
+  const listEl = document.getElementById('todayAppointmentList');
+  if (todayPending.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">暂无今日待到达预约</div>';
+  } else {
+    listEl.innerHTML = todayPending.map(apt => `
+      <div class="record-item" onclick="showAppointmentDetail(${apt.id})" style="cursor:pointer;">
+        <div class="record-info">
+          <div class="record-service">${apt.time} ${apt.customerName || apt.customerPhone} - ${apt.service}</div>
+          <div class="record-date">${apt.staff || '未指定美甲师'} · ${apt.note || '无备注'}</div>
+        </div>
+        <div class="record-amount">¥${apt.price}</div>
+      </div>
+    `).join('');
+  }
+}
+
+// ==================== 预约管理 ====================
+let currentMonthOffset = 0;
+let selectedDate = null;
+let editingAppointmentId = null;
+let nailImages = []; // 多图存储数组
+
+function renderAppointments() {
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  // 只显示待到达的预约
+  const pendingApts = appointments.filter(a => a.status !== 'arrived');
+  
+  // 计算当前显示的月份
+  const now = new Date();
+  const viewYear = now.getFullYear();
+  const viewMonth = now.getMonth() + currentMonthOffset;
+  const viewDate = new Date(viewYear, viewMonth, 1);
+  
+  // 月份标题
+  document.getElementById('monthTitle').textContent = (viewDate.getMonth() + 1) + '月';
+  
+  // 生成月历
+  const calendarEl = document.getElementById('monthCalendar');
+  const weekDays = ['一', '二', '三', '四', '五', '六', '日'];
+  let html = '';
+  
+  // 星期头部
+  weekDays.forEach(day => {
+    html += `<div class="month-cal-header">${day}</div>`;
+  });
+  
+  // 获取当月第一天和最后一天
+  const firstDay = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+  const lastDay = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
+  
+  // 计算第一天是星期几（周一为0）
+  let firstDayOfWeek = firstDay.getDay() - 1;
+  if (firstDayOfWeek < 0) firstDayOfWeek = 6;
+  
+  // 计算需要显示的行数（6行保证完整显示）
+  const totalCells = 42; // 6行 * 7列
+  
+  const todayStr = formatDate(new Date());
+  
+  for (let i = 0; i < totalCells; i++) {
+    const dayNum = i - firstDayOfWeek + 1;
+    let cellDate, cellDateStr, isOtherMonth = false;
+    
+    if (dayNum < 1) {
+      // 上月日期
+      const prevMonthLastDay = new Date(viewDate.getFullYear(), viewDate.getMonth(), 0);
+      cellDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, prevMonthLastDay.getDate() + dayNum);
+      isOtherMonth = true;
+    } else if (dayNum > lastDay.getDate()) {
+      // 下月日期
+      cellDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, dayNum - lastDay.getDate());
+      isOtherMonth = true;
+    } else {
+      // 当月日期
+      cellDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), dayNum);
+    }
+    
+    cellDateStr = formatDate(cellDate);
+    const isToday = cellDateStr === todayStr;
+    const dayApts = pendingApts.filter(a => a.date === cellDateStr);
+    const hasAppointment = dayApts.length > 0;
+    const isSelected = selectedDate === cellDateStr;
+    
+    let classes = 'month-cal-cell';
+    if (isOtherMonth) classes += ' other-month';
+    if (isToday) classes += ' today';
+    if (hasAppointment && !isOtherMonth) classes += ' has-appointment';
+    if (isSelected) classes += ' selected';
+    
+    html += `<div class="${classes}" onclick="selectDate('${cellDateStr}')">`;
+    html += `<div class="cal-date-num">${cellDate.getDate()}</div>`;
+    html += `<div class="cal-apt-times">`;
+    
+    // 显示最多3个预约时间
+    const sortedDayApts = dayApts.sort((a, b) => a.time.localeCompare(b.time));
+    const maxShow = 3;
+    for (let j = 0; j < Math.min(sortedDayApts.length, maxShow); j++) {
+      html += `<div class="cal-apt-time">${sortedDayApts[j].time}</div>`;
+    }
+    if (sortedDayApts.length > maxShow) {
+      html += `<div class="cal-apt-more">+${sortedDayApts.length - maxShow}...</div>`;
+    }
+    
+    html += `</div>`;
+    html += `</div>`;
+  }
+  
+  calendarEl.innerHTML = html;
+  
+  // 如果有选中日期，渲染当日预约展开区域
+  renderDayAppointments();
+  
+  // 预约列表（全部待到达）
+  const listEl = document.getElementById('appointmentList');
+  if (pendingApts.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">暂无待到达预约</div>';
+  } else {
+    const sorted = [...pendingApts].sort((a, b) => {
+      const dateA = new Date(a.date + ' ' + a.time);
+      const dateB = new Date(b.date + ' ' + b.time);
+      return dateA - dateB;
+    });
+    listEl.innerHTML = sorted.map(apt => {
+        const images = apt.images || (apt.nailImage ? [apt.nailImage] : []);
+        return `
+        <div class="apt-card">
+          <div class="apt-card-header">
+            <div class="apt-card-time">${apt.date} &nbsp; ${apt.time}${apt.endTime ? ' - ' + apt.endTime : ''}</div>
+            <div class="apt-card-status">待到达</div>
+          </div>
+          <div class="apt-card-info">
+            <div class="apt-card-info-item"><span class="label">顾客：</span>${apt.customerName || apt.customerPhone || '-'}</div>
+            <div class="apt-card-info-item"><span class="label">电话：</span>${apt.customerPhone || '-'}</div>
+            <div class="apt-card-info-item"><span class="label">服务：</span>${apt.service}</div>
+            <div class="apt-card-info-item"><span class="label">美甲师：</span>${apt.staff || '未指定'}</div>
+            <div class="apt-card-info-item"><span class="label">价格：</span>¥${apt.price}</div>
+            <div class="apt-card-info-item"><span class="label">支付：</span>${apt.useMemberCard ? '会员卡' : '现金/转账'}</div>
+            ${apt.nailRemoval && apt.nailRemoval !== '无' ? `<div class="apt-card-info-item"><span class="label">卸甲：</span>${apt.nailRemoval}</div>` : ''}
+          </div>
+          ${images.length > 0 ? `
+            <div class="apt-card-images">
+              ${images.slice(0, 4).map(img => `<img src="${img}" alt="款式图">`).join('')}
+              ${images.length > 4 ? `<div class="apt-card-images-more">+${images.length - 4}</div>` : ''}
+            </div>
+          ` : ''}
+          ${apt.note ? `<div class="apt-card-note">备注：${apt.note}</div>` : ''}
+          <div class="apt-card-actions">
+            <button class="btn btn-primary btn-sm" onclick="confirmArrival(${apt.id})">确认到达</button>
+            <button class="btn btn-secondary btn-sm" onclick="showAppointmentDetail(${apt.id})">详情</button>
+            <button class="btn btn-secondary btn-sm" onclick="editAppointment(${apt.id})">编辑</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${apt.id})">删除</button>
+          </div>
+        </div>
+      `;
+      }).join('');
+  }
+}
+
+function selectDate(dateStr) {
+  if (selectedDate === dateStr) {
+    selectedDate = null;
+  } else {
+    selectedDate = dateStr;
+  }
+  renderAppointments();
+}
+
+function renderDayAppointments() {
+  const expandEl = document.getElementById('dayAppointmentsExpand');
+  const contentEl = document.getElementById('dayAppointmentsContent');
+  
+  if (!selectedDate) {
+    expandEl.classList.remove('show');
+    return;
+  }
+  
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  const dayApts = appointments.filter(a => a.date === selectedDate)
+    .sort((a, b) => a.time.localeCompare(b.time));
+  
+  expandEl.classList.add('show');
+  
+  const dateObj = new Date(selectedDate);
+  const weekday = getWeekDayName(dateObj);
+  const dateDisplay = `${dateObj.getMonth() + 1}月${dateObj.getDate()}日 ${weekday}`;
+  
+  if (dayApts.length === 0) {
+    contentEl.innerHTML = `
+      <div class="day-appointments-title">${dateDisplay} · 当天预约</div>
+      <div class="empty-state" style="padding: 24px;">当天暂无预约</div>
+      <div style="text-align:center; margin-top: 12px;">
+        <button class="btn btn-primary btn-sm" onclick="navigateTo('newAppointment'); prefillDate('${selectedDate}');">+ 新建当天预约</button>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = `<div class="day-appointments-title">${dateDisplay} · 当天预约 (${dayApts.length})</div>`;
+  
+  dayApts.forEach(apt => {
+    const images = apt.images || (apt.nailImage ? [apt.nailImage] : []);
+    const statusText = apt.status === 'arrived' ? '已到达' : '待到达';
+    const statusClass = apt.status === 'arrived' ? 'arrived' : '';
+    
+    html += `
+      <div class="apt-card">
+        <div class="apt-card-header">
+          <div class="apt-card-time">${apt.time}${apt.endTime ? ' - ' + apt.endTime : ''}</div>
+          <div class="apt-card-status ${statusClass}">${statusText}</div>
+        </div>
+        <div class="apt-card-info">
+          <div class="apt-card-info-item"><span class="label">顾客：</span>${apt.customerName || apt.customerPhone || '-'}</div>
+          <div class="apt-card-info-item"><span class="label">电话：</span>${apt.customerPhone || '-'}</div>
+          <div class="apt-card-info-item"><span class="label">服务：</span>${apt.service}</div>
+          <div class="apt-card-info-item"><span class="label">美甲师：</span>${apt.staff || '未指定'}</div>
+          <div class="apt-card-info-item"><span class="label">价格：</span>¥${apt.price}</div>
+          <div class="apt-card-info-item"><span class="label">支付：</span>${apt.useMemberCard ? '会员卡' : '现金/转账'}</div>
+          ${apt.nailRemoval && apt.nailRemoval !== '无' ? `<div class="apt-card-info-item"><span class="label">卸甲：</span>${apt.nailRemoval}</div>` : ''}
+        </div>
+        ${images.length > 0 ? `
+          <div class="apt-card-images">
+            ${images.map(img => `<img src="${img}" alt="款式图">`).join('')}
+          </div>
+        ` : ''}
+        ${apt.note ? `<div class="apt-card-note">备注：${apt.note}</div>` : ''}
+        <div class="apt-card-actions">
+          ${apt.status !== 'arrived' ? `<button class="btn btn-primary btn-sm" onclick="confirmArrival(${apt.id})">确认到达</button>` : ''}
+          <button class="btn btn-secondary btn-sm" onclick="showAppointmentDetail(${apt.id})">查看详情</button>
+          <button class="btn btn-secondary btn-sm" onclick="editAppointment(${apt.id})">编辑</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${apt.id})">删除</button>
+        </div>
+      </div>
+    `;
+  });
+  
+  contentEl.innerHTML = html;
+}
+
+function prefillDate(dateStr) {
+  setTimeout(() => {
+    document.getElementById('aptDate').value = dateStr;
+  }, 50);
+}
+
+function changeMonth(delta) {
+  currentMonthOffset += delta;
+  selectedDate = null;
+  renderAppointments();
+}
+
+function goToThisMonth() {
+  currentMonthOffset = 0;
+  selectedDate = null;
+  renderAppointments();
+}
+
+function showAppointmentDetail(id) {
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  const apt = appointments.find(a => a.id === id);
+  if (!apt) return;
+  
+  const statusText = apt.status === 'arrived' ? '已到达' : '待到达';
+  const payText = apt.useMemberCard ? '会员卡抵扣' : '现金/转账';
+  const images = apt.images || (apt.nailImage ? [apt.nailImage] : []);
+  
+  const content = document.getElementById('appointmentDetailContent');
+  content.innerHTML = `
+    <div class="appointment-detail">
+      <div>
+        <div class="form-group">
+          <label class="form-label">顾客姓名</label>
+          <div style="font-size:14px;">${apt.customerName || '-'}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">联系电话</label>
+          <div style="font-size:14px;">${apt.customerPhone || apt.phone || '-'}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">预约时间</label>
+          <div style="font-size:14px;">${apt.date} ${apt.time}${apt.endTime ? ' - ' + apt.endTime : ''}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">服务项目</label>
+          <div style="font-size:14px;">${apt.service}</div>
+        </div>
+        ${apt.nailRemoval && apt.nailRemoval !== '无' ? `
+        <div class="form-group">
+          <label class="form-label">卸甲</label>
+          <div style="font-size:14px;">${apt.nailRemoval}</div>
+        </div>
+        ` : ''}
+      </div>
+      <div>
+        <div class="form-group">
+          <label class="form-label">价格</label>
+          <div style="font-size:18px;font-weight:500;color:#2c2c2c;letter-spacing:0.5px;">¥${apt.price}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">指定美甲师</label>
+          <div style="font-size:14px;">${apt.staff || '未指定'}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">支付方式</label>
+          <div style="font-size:14px;">${payText}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">预约状态</label>
+          <div style="font-size:14px;">${statusText}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">款式图片</label>
+          ${images.length > 0 ? `
+            <div class="detail-images-grid">
+              ${images.map(img => `<img src="${img}" alt="款式图">`).join('')}
+            </div>
+          ` : '<div class="nail-image-placeholder" style="height:100px;">暂无图片</div>'}
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">备注</label>
+      <div style="font-size:13px;color:#666;">${apt.note || '无'}</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="deleteAppointment(${apt.id}); closeModal('appointmentDetailModal');">删除预约</button>
+      <button class="btn btn-secondary" onclick="editAppointment(${apt.id}); closeModal('appointmentDetailModal');">编辑</button>
+      ${apt.status !== 'arrived' ? `<button class="btn btn-primary" onclick="confirmArrival(${apt.id}); closeModal('appointmentDetailModal');">确认到达</button>` : ''}
+      <button class="btn btn-secondary" onclick="closeModal('appointmentDetailModal');">关闭</button>
+    </div>
+  `;
+  document.getElementById('appointmentDetailModal').classList.add('show');
+}
+
+function confirmArrival(id) {
+  if (!confirm('确认顾客已到达？')) return;
+  
+  let appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  const apt = appointments.find(a => a.id === id);
+  if (!apt) return;
+  
+  apt.status = 'arrived';
+  apt.arriveTime = formatDate(new Date()) + ' ' + new Date().toTimeString().substring(0, 5);
+  saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+  
+  // 如果是会员且使用会员卡抵扣，扣减余额
+  if (apt.useMemberCard) {
+    let customers = loadData(STORAGE_KEYS.CUSTOMERS);
+    const customer = customers.find(c => c.phone === apt.customerPhone);
+    if (customer) {
+      customer.balance = (customer.balance || 0) - Number(apt.price);
+      customer.records = customer.records || [];
+      customer.records.unshift({
+        date: apt.date,
+        service: apt.service + '（会员卡抵扣）',
+        amount: -Number(apt.price)
+      });
+      saveData(STORAGE_KEYS.CUSTOMERS, customers);
+    }
+  } else {
+    // 非会员卡抵扣的，添加消费记录到顾客档案
+    let customers = loadData(STORAGE_KEYS.CUSTOMERS);
+    const customer = customers.find(c => c.phone === apt.customerPhone);
+    if (customer) {
+      customer.records = customer.records || [];
+      customer.records.unshift({
+        date: apt.date,
+        service: apt.service,
+        amount: Number(apt.price)
+      });
+      saveData(STORAGE_KEYS.CUSTOMERS, customers);
+    }
+  }
+  
+  alert('已确认到达！');
+  renderAppointments();
+  renderHome();
+}
+
+function deleteAppointment(id) {
+  if (!confirm('确定要删除这个预约吗？')) return;
+  let appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  appointments = appointments.filter(a => a.id !== id);
+  saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+  renderAppointments();
+  renderHome();
+}
+
+function editAppointment(id) {
+  editingAppointmentId = id;
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  const apt = appointments.find(a => a.id === id);
+  if (!apt) return;
+  
+  navigateTo('newAppointment');
+  
+  // 延迟填充数据，确保页面已切换
+  setTimeout(() => {
+    document.getElementById('newAppointmentTitle').textContent = '编辑预约';
+    document.getElementById('pageTitle').textContent = '编辑预约';
+    document.getElementById('aptCustomerName').value = apt.customerName || '';
+    document.getElementById('aptCustomerPhone').value = apt.customerPhone || '';
+    document.getElementById('aptDate').value = apt.date;
+    document.getElementById('aptTime').value = apt.time;
+    document.getElementById('aptEndTime').value = apt.endTime || '';
+    document.getElementById('aptNailType').value = apt.nailType || '';
+    document.getElementById('aptStyle').value = apt.style || '';
+    document.getElementById('aptNailRemoval').value = apt.nailRemoval || '无';
+    document.getElementById('aptPrice').value = apt.price;
+    document.getElementById('aptSource').value = apt.source || '小红书';
+    document.getElementById('aptStaff').value = apt.staff || '';
+    document.getElementById('aptNote').value = apt.note || '';
+    document.getElementById('aptUseMemberCard').checked = apt.useMemberCard || false;
+    
+    // 填充图片
+    nailImages = apt.images || (apt.nailImage ? [apt.nailImage] : []);
+    renderNailImagePreview();
+    
+    // 检查会员状态
+    checkMemberStatus();
+  }, 100);
+}
+
+// ==================== 新建/编辑预约 ====================
+function initNewAppointmentForm() {
+  // 如果不是编辑模式，重置表单
+  if (!editingAppointmentId) {
+    document.getElementById('newAppointmentTitle').textContent = '新建预约';
+    document.getElementById('pageTitle').textContent = '新建预约';
+    document.getElementById('newAppointmentForm').reset();
+    nailImages = [];
+    renderNailImagePreview();
+  }
+  
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const select = document.getElementById('aptStaff');
+  select.innerHTML = '<option value="">不指定</option>' + 
+    staff.map(s => `<option value="${s.name}">${s.name} (${s.role})</option>`).join('');
+  
+  if (!editingAppointmentId) {
+    document.getElementById('aptDate').value = formatDate(new Date());
+  }
+  
+  // 重置会员卡选项
+  if (!editingAppointmentId) {
+    document.getElementById('memberCardGroup').style.display = 'none';
+    document.getElementById('aptUseMemberCard').checked = false;
+  }
+  
+  // 监听电话输入，检测是否为会员
+  document.getElementById('aptCustomerPhone').addEventListener('input', checkMemberStatus);
+}
+
+function checkMemberStatus() {
+  const phone = document.getElementById('aptCustomerPhone').value;
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  const customer = customers.find(c => c.phone === phone);
+  const group = document.getElementById('memberCardGroup');
+  const balanceInfo = document.getElementById('memberBalanceInfo');
+  
+  if (customer && customer.balance > 0) {
+    group.style.display = 'block';
+    balanceInfo.textContent = '(余额: ¥' + customer.balance + ')';
+  } else {
+    group.style.display = 'none';
+    document.getElementById('aptUseMemberCard').checked = false;
+  }
+}
+
+function updateMemberCardInfo() {
+  // 可以在这里添加更多逻辑
+}
+
+function updateServiceText() {
+  const nailType = document.getElementById('aptNailType').value;
+  const style = document.getElementById('aptStyle').value;
+  const nailRemoval = document.getElementById('aptNailRemoval').value;
+  let service = '';
+  if (nailType && style) {
+    service = nailType + ' · ' + style;
+    if (nailRemoval && nailRemoval !== '无') {
+      service += ' + ' + nailRemoval;
+    }
+  }
+  document.getElementById('aptServiceText') && (document.getElementById('aptServiceText').value = service);
+}
+
+function previewNailImages(event) {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+  
+  let loadedCount = 0;
+  const newImages = [];
+  
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      newImages.push(e.target.result);
+      loadedCount++;
+      if (loadedCount === files.length) {
+        nailImages = nailImages.concat(newImages);
+        renderNailImagePreview();
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+  
+  // 清空input，允许重复选择同一文件
+  event.target.value = '';
+}
+
+function removeNailImage(index) {
+  nailImages.splice(index, 1);
+  renderNailImagePreview();
+}
+
+function renderNailImagePreview() {
+  const grid = document.getElementById('nailImagePreviewGrid');
+  if (nailImages.length === 0) {
+    grid.innerHTML = '';
+    return;
+  }
+  
+  grid.innerHTML = nailImages.map((img, index) => `
+    <div class="image-preview-item">
+      <img src="${img}" alt="款式图${index + 1}">
+      <button type="button" class="image-preview-remove" onclick="removeNailImage(${index})">×</button>
+    </div>
+  `).join('');
+}
+
+function cancelAppointmentEdit() {
+  editingAppointmentId = null;
+  nailImages = [];
+  document.getElementById('newAppointmentForm').reset();
+  renderNailImagePreview();
+  document.getElementById('memberCardGroup').style.display = 'none';
+  navigateTo('appointment');
+}
+
+function saveAppointment(event) {
+  event.preventDefault();
+  
+  const name = document.getElementById('aptCustomerName').value;
+  const phone = document.getElementById('aptCustomerPhone').value;
+  const date = document.getElementById('aptDate').value;
+  const time = document.getElementById('aptTime').value;
+  const endTime = document.getElementById('aptEndTime').value;
+  const nailType = document.getElementById('aptNailType').value;
+  const style = document.getElementById('aptStyle').value;
+  const nailRemoval = document.getElementById('aptNailRemoval').value;
+  let service = nailType + ' · ' + style;
+  if (nailRemoval && nailRemoval !== '无') {
+    service += ' + ' + nailRemoval;
+  }
+  const price = document.getElementById('aptPrice').value;
+  const source = document.getElementById('aptSource').value;
+  const staff = document.getElementById('aptStaff').value;
+  const note = document.getElementById('aptNote').value;
+  const useMemberCard = document.getElementById('aptUseMemberCard').checked;
+  const images = [...nailImages];
+  
+  // 校验
+  if (!nailType || !style) {
+    alert('请选择手部美甲类型和款式');
+    return;
+  }
+  
+  // 如果使用会员卡抵扣，检查余额
+  if (useMemberCard) {
+    const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+    const customer = customers.find(c => c.phone === phone);
+    if (!customer || customer.balance < Number(price)) {
+      alert('会员卡余额不足，无法抵扣！');
+      return;
+    }
+  }
+  
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  
+  if (editingAppointmentId) {
+    // 编辑模式
+    const aptIndex = appointments.findIndex(a => a.id === editingAppointmentId);
+    if (aptIndex === -1) {
+      alert('预约不存在！');
+      return;
+    }
+    const oldApt = appointments[aptIndex];
+    const oldPhone = oldApt.customerPhone;
+    const oldService = oldApt.service;
+    const oldPrice = oldApt.price;
+    const oldUseMemberCard = oldApt.useMemberCard;
+    
+    // 更新预约数据
+    appointments[aptIndex] = {
+      ...oldApt,
+      customerName: name,
+      customerPhone: phone,
+      source: source,
+      date,
+      time,
+      endTime,
+      nailType,
+      style,
+      nailRemoval,
+      service,
+      price: Number(price),
+      staff,
+      note,
+      images,
+      useMemberCard: useMemberCard
+    };
+    saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+    
+    // 更新顾客档案中的服务记录
+    let customers = loadData(STORAGE_KEYS.CUSTOMERS);
+    
+    // 如果手机号变了，需要处理
+    if (oldPhone !== phone) {
+      // 从旧顾客记录中移除
+      const oldCustomer = customers.find(c => c.phone === oldPhone);
+      if (oldCustomer && oldCustomer.records) {
+        oldCustomer.records = oldCustomer.records.filter(r => 
+          !(r.date === oldApt.date && r.service === oldService && r.amount === (oldUseMemberCard ? -Number(oldPrice) : Number(oldPrice)))
+        );
+      }
+      
+      // 添加到新顾客
+      const newCustomer = customers.find(c => c.phone === phone);
+      if (newCustomer) {
+        newCustomer.records = newCustomer.records || [];
+        newCustomer.records.unshift({
+          date,
+          service: useMemberCard ? service + '（会员卡抵扣）' : service,
+          amount: useMemberCard ? -Number(price) : Number(price)
+        });
+      } else {
+        // 新顾客自动建档
+        const newCust = {
+          id: Date.now() + 1,
+          name,
+          phone,
+          age: '',
+          source: source,
+          style: '',
+          balance: 0,
+          note: '自动建档',
+          createTime: formatDate(new Date()),
+          records: [{ date, service, amount: Number(price) }]
+        };
+        customers.push(newCust);
+      }
+    } else {
+      // 手机号没变，更新服务记录
+      const customer = customers.find(c => c.phone === phone);
+      if (customer && customer.records) {
+        // 找到并更新对应的记录
+        const recordIndex = customer.records.findIndex(r => 
+          r.date === oldApt.date && r.service === oldService && Math.abs(r.amount) === Number(oldPrice)
+        );
+        if (recordIndex !== -1) {
+          customer.records[recordIndex] = {
+            date,
+            service: useMemberCard ? service + '（会员卡抵扣）' : service,
+            amount: useMemberCard ? -Number(price) : Number(price)
+          };
+          // 重新排序
+          customer.records.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+      }
+    }
+    
+    saveData(STORAGE_KEYS.CUSTOMERS, customers);
+    
+    alert('预约更新成功！');
+  } else {
+    // 新增模式
+    const newApt = {
+      id: Date.now(),
+      customerName: name,
+      customerPhone: phone,
+      source: source,
+      date,
+      time,
+      endTime,
+      nailType,
+      style,
+      nailRemoval,
+      service,
+      price: Number(price),
+      staff,
+      note,
+      images,
+      status: 'pending', // pending: 待到达, arrived: 已到达
+      useMemberCard: useMemberCard
+    };
+    appointments.push(newApt);
+    saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+    
+    // 检查是否是新顾客，如果是则自动添加到顾客档案
+    let customers = loadData(STORAGE_KEYS.CUSTOMERS);
+    const existingCustomer = customers.find(c => c.phone === phone);
+    if (!existingCustomer) {
+      const newCustomer = {
+        id: Date.now() + 1,
+        name,
+        phone,
+        age: '',
+        source: source,
+        style: '',
+        balance: 0,
+        note: '自动建档',
+        createTime: formatDate(new Date()),
+        records: [{ date, service, amount: Number(price) }]
+      };
+      customers.push(newCustomer);
+      saveData(STORAGE_KEYS.CUSTOMERS, customers);
+    }
+    
+    alert('预约创建成功！');
+  }
+  
+  // 重置表单状态
+  editingAppointmentId = null;
+  nailImages = [];
+  document.getElementById('newAppointmentForm').reset();
+  renderNailImagePreview();
+  document.getElementById('memberCardGroup').style.display = 'none';
+  navigateTo('appointment');
+}
+
+// ==================== 顾客档案 ====================
+function renderCustomers() {
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  const searchVal = document.getElementById('customerSearch').value.toLowerCase();
+  
+  const filtered = customers.filter(c => 
+    c.name.toLowerCase().includes(searchVal) || 
+    c.phone.includes(searchVal)
+  );
+  
+  const grid = document.getElementById('customerGrid');
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">暂无顾客数据</div>';
+    return;
+  }
+  
+  grid.innerHTML = filtered.map(c => `
+    <div class="customer-card" onclick="showCustomerDetail(${c.id})">
+      <div class="customer-avatar">${c.name.charAt(0)}</div>
+      <div class="customer-name">${c.name}</div>
+      <div class="customer-phone">${c.phone}</div>
+      <div class="customer-tags">
+        ${c.source ? `<span class="customer-tag">${c.source}</span>` : ''}
+        ${c.style ? `<span class="customer-tag">${c.style.split('、')[0]}</span>` : ''}
+      </div>
+      <div class="customer-balance">余额：¥${c.balance || 0}</div>
+    </div>
+  `).join('');
+}
+
+function searchCustomers() {
+  renderCustomers();
+}
+
+function showCustomerDetail(id) {
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  const customer = customers.find(c => c.id === id);
+  if (!customer) return;
+  
+  const content = document.getElementById('customerDetailContent');
+  const records = customer.records || [];
+  
+  content.innerHTML = `
+    <div style="display:flex; gap:16px; margin-bottom:20px;">
+      <div class="customer-avatar" style="width:64px;height:64px;font-size:24px;">${customer.name.charAt(0)}</div>
+      <div>
+        <div style="font-size:18px;font-weight:600;">${customer.name}</div>
+        <div style="font-size:13px;color:#888;margin-top:4px;">${customer.phone}</div>
+        <div style="margin-top:8px;">
+          ${customer.source ? `<span class="customer-tag" style="margin-right:6px;">${customer.source}</span>` : ''}
+          ${customer.age ? `<span class="customer-tag">${customer.age}岁</span>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">风格偏好</label>
+        <div style="font-size:13px;">${customer.style || '未设置'}</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">会员卡余额</label>
+        <div style="font-size:18px;font-weight:500;color:#2c2c2c;letter-spacing:0.5px;">¥${customer.balance || 0}</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">备注</label>
+      <div style="font-size:13px;color:#666;">${customer.note || '无'}</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">消费记录 (${records.length}条)</label>
+      <div style="max-height:200px;overflow-y:auto;border:1px solid #f0ebe5;border-radius:8px;padding:0 12px;">
+        ${records.length === 0 ? '<div class="empty-state" style="padding:20px;">暂无消费记录</div>' : 
+          records.map(r => `
+            <div class="record-item">
+              <div class="record-info">
+                <div class="record-service">${r.service}</div>
+                <div class="record-date">${r.date}</div>
+              </div>
+              <div class="record-amount">¥${r.amount}</div>
+            </div>
+          `).join('')
+        }
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="deleteCustomer(${customer.id}); closeModal('customerDetailModal');">删除顾客</button>
+      <button class="btn btn-primary" onclick="closeModal('customerDetailModal');">关闭</button>
+    </div>
+  `;
+  document.getElementById('customerDetailModal').classList.add('show');
+}
+
+function deleteCustomer(id) {
+  if (!confirm('确定要删除这个顾客吗？')) return;
+  let customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  customers = customers.filter(c => c.id !== id);
+  saveData(STORAGE_KEYS.CUSTOMERS, customers);
+  renderCustomers();
+  renderHome();
+}
+
+// ==================== 新增顾客 ====================
+function saveCustomer(event) {
+  event.preventDefault();
+  
+  const name = document.getElementById('custName').value;
+  const phone = document.getElementById('custPhone').value;
+  const age = document.getElementById('custAge').value;
+  const source = document.getElementById('custSource').value;
+  const style = document.getElementById('custStyle').value;
+  const balance = document.getElementById('custBalance').value;
+  const firstSpend = document.getElementById('custFirstSpend').value;
+  const note = document.getElementById('custNote').value;
+  
+  // 检查手机号是否已存在
+  let customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  if (customers.find(c => c.phone === phone)) {
+    alert('该手机号已存在顾客档案！');
+    return;
+  }
+  
+  const records = [];
+  if (firstSpend && Number(firstSpend) > 0) {
+    records.push({
+      date: formatDate(new Date()),
+      service: '首次消费',
+      amount: Number(firstSpend)
+    });
+  }
+  
+  const newCustomer = {
+    id: Date.now(),
+    name,
+    phone,
+    age: age ? Number(age) : '',
+    source,
+    style,
+    balance: Number(balance) || 0,
+    note,
+    createTime: formatDate(new Date()),
+    records
+  };
+  
+  customers.push(newCustomer);
+  saveData(STORAGE_KEYS.CUSTOMERS, customers);
+  
+  alert('顾客添加成功！');
+  document.getElementById('newCustomerForm').reset();
+  document.getElementById('custBalance').value = '0';
+  document.getElementById('custFirstSpend').value = '0';
+  navigateTo('customers');
+}
+
+// ==================== 排班管理 ====================
+let scheduleWeekOffset = 0;
+let currentScheduleCell = null;
+
+function renderSchedule() {
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const schedule = loadData(STORAGE_KEYS.SCHEDULE);
+  
+  const baseDate = new Date();
+  baseDate.setDate(baseDate.getDate() + scheduleWeekOffset * 7);
+  const weekDates = getWeekDates(baseDate);
+  
+  const startStr = (weekDates[0].getMonth() + 1) + '月' + weekDates[0].getDate() + '日';
+  const endStr = (weekDates[6].getMonth() + 1) + '月' + weekDates[6].getDate() + '日';
+  document.getElementById('scheduleWeekText').textContent = startStr + ' - ' + endStr + ' 排班';
+  
+  // 表头
+  const header = document.getElementById('scheduleHeader');
+  let headerHtml = '<th style="width:140px;">美甲师</th>';
+  weekDates.forEach(d => {
+    const isToday = formatDate(d) === formatDate(new Date());
+    headerHtml += `<th>${getWeekDayName(d)}<br><span style="font-size:11px;${isToday ? 'color:#2c2c2c;' : ''}">${d.getMonth()+1}/${d.getDate()}</span></th>`;
+  });
+  header.innerHTML = headerHtml;
+  
+  // 表体
+  const body = document.getElementById('scheduleBody');
+  let bodyHtml = '';
+  
+  staff.forEach(s => {
+    bodyHtml += '<tr>';
+    bodyHtml += `<td class="staff-col">${s.name}<br><span style="font-size:11px;color:#999;">${s.role}</span></td>`;
+    weekDates.forEach(d => {
+      const dateStr = formatDate(d);
+      const key = s.id + '_' + dateStr;
+      const shifts = schedule.filter(sh => sh.staffId === s.id && sh.date === dateStr);
+      bodyHtml += `<td class="schedule-cell" onclick="openShiftModal(${s.id}, '${dateStr}', this)">`;
+      shifts.forEach(sh => {
+        const shiftClass = sh.type === 'morning' ? 'morning' : (sh.type === 'full' ? 'full' : '');
+        const typeText = sh.type === 'morning' ? '早班' : (sh.type === 'full' ? '全天' : (sh.type === 'afternoon' ? '中班' : '自定义'));
+        bodyHtml += `<span class="shift-tag ${shiftClass}">${typeText} ${sh.start}-${sh.end}<span class="remove-shift" onclick="event.stopPropagation(); removeShift(${sh.id})">×</span></span>`;
+      });
+      bodyHtml += '</td>';
+    });
+    bodyHtml += '</tr>';
+  });
+  
+  if (staff.length === 0) {
+    bodyHtml = `<tr><td colspan="8"><div class="empty-state">请先添加美甲师</div></td></tr>`;
+  }
+  
+  body.innerHTML = bodyHtml;
+  
+  // 美甲师列表
+  renderStaffList();
+  // 工资发放记录
+  renderSalaryList();
+}
+
+function changeScheduleWeek(delta) {
+  scheduleWeekOffset += delta;
+  renderSchedule();
+}
+
+function openShiftModal(staffId, date, cell) {
+  currentScheduleCell = { staffId, date };
+  document.getElementById('addShiftModal').classList.add('show');
+}
+
+function updateShiftTime() {
+  const type = document.getElementById('shiftType').value;
+  const startEl = document.getElementById('shiftStart');
+  const endEl = document.getElementById('shiftEnd');
+  
+  switch(type) {
+    case 'morning':
+      startEl.value = '09:00';
+      endEl.value = '14:00';
+      startEl.disabled = true;
+      endEl.disabled = true;
+      break;
+    case 'afternoon':
+      startEl.value = '13:00';
+      endEl.value = '18:00';
+      startEl.disabled = true;
+      endEl.disabled = true;
+      break;
+    case 'full':
+      startEl.value = '09:00';
+      endEl.value = '21:00';
+      startEl.disabled = true;
+      endEl.disabled = true;
+      break;
+    case 'custom':
+      startEl.disabled = false;
+      endEl.disabled = false;
+      break;
+  }
+}
+
+function addShift(event) {
+  event.preventDefault();
+  
+  if (!currentScheduleCell) return;
+  
+  const type = document.getElementById('shiftType').value;
+  const start = document.getElementById('shiftStart').value;
+  const end = document.getElementById('shiftEnd').value;
+  
+  let schedule = loadData(STORAGE_KEYS.SCHEDULE);
+  schedule.push({
+    id: Date.now(),
+    staffId: currentScheduleCell.staffId,
+    date: currentScheduleCell.date,
+    type,
+    start,
+    end
+  });
+  saveData(STORAGE_KEYS.SCHEDULE, schedule);
+  
+  closeModal('addShiftModal');
+  renderSchedule();
+}
+
+function removeShift(id) {
+  if (!confirm('确定删除这个班次吗？')) return;
+  let schedule = loadData(STORAGE_KEYS.SCHEDULE);
+  schedule = schedule.filter(s => s.id !== id);
+  saveData(STORAGE_KEYS.SCHEDULE, schedule);
+  renderSchedule();
+}
+
+function saveSchedule() {
+  alert('排班已保存！');
+}
+
+// 美甲师管理
+let editingStaffId = null; // 编辑模式下的美甲师ID
+
+// 获取指定美甲师指定月份的服务统计（单数、总金额）
+function getStaffServiceStats(staffId, month) {
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const staffMember = staff.find(s => s.id === staffId);
+  if (!staffMember) return { count: 0, amount: 0 };
+  
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  const monthStart = month + '-01';
+  const nextMonth = new Date(month + '-01');
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
+  const monthEnd = formatDate(nextMonth);
+  
+  const staffApts = appointments.filter(a => 
+    a.status === 'arrived' && 
+    a.staff === staffMember.name && 
+    a.date >= monthStart && 
+    a.date < monthEnd
+  );
+  
+  return {
+    count: staffApts.length,
+    amount: staffApts.reduce((sum, a) => sum + Number(a.price), 0)
+  };
+}
+
+// 获取指定美甲师指定月份的提成
+function getStaffCommission(staffId, month) {
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const staffMember = staff.find(s => s.id === staffId);
+  if (!staffMember) return 0;
+  
+  const stats = getStaffServiceStats(staffId, month);
+  const rate = staffMember.commissionRate || 30;
+  return Math.round(stats.amount * rate / 100 * 100) / 100;
+}
+
+function renderStaffList() {
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const listEl = document.getElementById('staffList');
+  
+  if (staff.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">暂无美甲师，请点击上方按钮添加</div>';
+    return;
+  }
+  
+  const now = new Date();
+  const currentMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  
+  listEl.innerHTML = staff.map(s => {
+    const stats = getStaffServiceStats(s.id, currentMonth);
+    const commission = getStaffCommission(s.id, currentMonth);
+    const baseSalary = s.baseSalary || 0;
+    const totalSalary = baseSalary + commission;
+    const commissionRate = s.commissionRate || 30;
+    
+    // 获取本月服务详情
+    const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+    const monthStart = currentMonth + '-01';
+    const nextMonth = new Date(currentMonth + '-01');
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    const monthEnd = formatDate(nextMonth);
+    const staffApts = appointments.filter(a => 
+      a.status === 'arrived' && 
+      a.staff === s.name && 
+      a.date >= monthStart && 
+      a.date < monthEnd
+    );
+    
+    return `
+    <div class="staff-item" style="flex-direction:column; align-items:stretch;">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div class="staff-info">
+          <div class="staff-avatar">${s.name.charAt(0)}</div>
+          <div>
+            <div class="staff-name">${s.name}</div>
+            <div class="staff-role">${s.role}</div>
+          </div>
+        </div>
+        <div class="staff-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editStaff(${s.id})">编辑</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteStaff(${s.id})">删除</button>
+        </div>
+      </div>
+      <div class="staff-salary-info">
+        <div class="salary-row">
+          <span>底薪：</span>
+          <span>¥${baseSalary}</span>
+        </div>
+        <div class="salary-row">
+          <span>提成比例：</span>
+          <span>${commissionRate}%</span>
+        </div>
+        <div class="salary-row">
+          <span>本月服务：</span>
+          <span>${stats.count}单 / 服务金额 ¥${stats.amount}</span>
+        </div>
+        <div class="salary-row">
+          <span>本月提成：</span>
+          <span style="color:#8b7355;">¥${commission}</span>
+        </div>
+        <div class="salary-row">
+          <span>本月预估工资：</span>
+          <span class="salary-highlight">¥${totalSalary}</span>
+        </div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="toggleStaffSalaryDetail(${s.id})">
+            <span id="detailToggle-${s.id}">工资详情</span>
+          </button>
+        </div>
+        <div class="staff-salary-detail" id="staffSalaryDetail-${s.id}">
+          <div class="detail-title">本月服务记录（已到达）</div>
+          ${staffApts.length === 0 ? '<div style="font-size:12px;color:#999;text-align:center;padding:10px 0;">暂无服务记录</div>' : 
+            staffApts.map(apt => `
+              <div class="detail-item">
+                <span>${apt.date} ${apt.customerName || apt.customerPhone}</span>
+                <span style="color:#2c2c2c;">¥${apt.price}</span>
+              </div>
+            `).join('')
+          }
+        </div>
+      </div>
+    </div>
+  `}).join('');
+}
+
+function toggleStaffSalaryDetail(staffId) {
+  const detailEl = document.getElementById('staffSalaryDetail-' + staffId);
+  const toggleEl = document.getElementById('detailToggle-' + staffId);
+  if (detailEl) {
+    detailEl.classList.toggle('show');
+    if (toggleEl) {
+      toggleEl.textContent = detailEl.classList.contains('show') ? '收起详情' : '工资详情';
+    }
+  }
+}
+
+function showAddStaffModal() {
+  editingStaffId = null;
+  document.getElementById('addStaffModalTitle').textContent = '添加美甲师';
+  document.getElementById('addStaffSubmitBtn').textContent = '添加';
+  document.getElementById('staffName').value = '';
+  document.getElementById('staffPhone').value = '';
+  document.getElementById('staffRole').value = '美甲师';
+  document.getElementById('staffBaseSalary').value = 0;
+  document.getElementById('staffCommissionRate').value = 30;
+  document.getElementById('addStaffModal').classList.add('show');
+}
+
+function addStaff(event) {
+  event.preventDefault();
+  
+  const name = document.getElementById('staffName').value;
+  const role = document.getElementById('staffRole').value;
+  const phone = document.getElementById('staffPhone').value;
+  const baseSalary = Number(document.getElementById('staffBaseSalary').value) || 0;
+  const commissionRate = Number(document.getElementById('staffCommissionRate').value) || 30;
+  
+  let staff = loadData(STORAGE_KEYS.STAFF);
+  
+  if (editingStaffId) {
+    // 编辑模式
+    const index = staff.findIndex(s => s.id === editingStaffId);
+    if (index > -1) {
+      const oldName = staff[index].name;
+      staff[index] = {
+        ...staff[index],
+        name,
+        role,
+        phone,
+        baseSalary,
+        commissionRate
+      };
+      // 同时更新相关预约中的美甲师姓名
+      let appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+      appointments = appointments.map(apt => {
+        if (apt.staff === oldName) {
+          apt.staff = name;
+        }
+        return apt;
+      });
+      saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+    }
+  } else {
+    // 新增模式
+    staff.push({
+      id: Date.now(),
+      name,
+      role,
+      phone,
+      baseSalary,
+      commissionRate
+    });
+  }
+  
+  saveData(STORAGE_KEYS.STAFF, staff);
+  
+  closeModal('addStaffModal');
+  editingStaffId = null;
+  renderSchedule();
+}
+
+function editStaff(id) {
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const s = staff.find(x => x.id === id);
+  if (!s) return;
+  
+  editingStaffId = id;
+  document.getElementById('addStaffModalTitle').textContent = '编辑美甲师';
+  document.getElementById('addStaffSubmitBtn').textContent = '保存';
+  document.getElementById('staffName').value = s.name;
+  document.getElementById('staffPhone').value = s.phone || '';
+  document.getElementById('staffRole').value = s.role;
+  document.getElementById('staffBaseSalary').value = s.baseSalary || 0;
+  document.getElementById('staffCommissionRate').value = s.commissionRate || 30;
+  document.getElementById('addStaffModal').classList.add('show');
+}
+
+function deleteStaff(id) {
+  if (!confirm('确定要删除这位美甲师吗？')) return;
+  let staff = loadData(STORAGE_KEYS.STAFF);
+  staff = staff.filter(s => s.id !== id);
+  saveData(STORAGE_KEYS.STAFF, staff);
+  
+  // 同时删除相关排班
+  let schedule = loadData(STORAGE_KEYS.SCHEDULE);
+  schedule = schedule.filter(s => s.staffId !== id);
+  saveData(STORAGE_KEYS.SCHEDULE, schedule);
+  
+  renderSchedule();
+}
+
+// ==================== 工资发放 ====================
+function renderSalaryList() {
+  const salaries = loadData(STORAGE_KEYS.SALARIES);
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const listEl = document.getElementById('salaryList');
+  
+  if (salaries.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">暂无工资发放记录</div>';
+    return;
+  }
+  
+  const sorted = [...salaries].sort((a, b) => b.month.localeCompare(a.month));
+  
+  listEl.innerHTML = '<table class="salary-table"><thead><tr><th>发放月份</th><th>美甲师</th><th>底薪</th><th>提成</th><th>实发金额</th><th>备注</th><th>操作</th></tr></thead><tbody>' +
+    sorted.map(s => {
+      const staffMember = staff.find(st => st.id === s.staffId);
+      const staffName = staffMember ? staffMember.name : '未知';
+      return `
+      <tr>
+        <td data-label="发放月份">${s.month}</td>
+        <td data-label="美甲师">${staffName}</td>
+        <td data-label="底薪">¥${s.baseSalary || 0}</td>
+        <td data-label="提成">¥${s.commission || 0}</td>
+        <td data-label="实发金额" style="color:#2c2c2c;font-weight:500;">¥${s.amount}</td>
+        <td data-label="备注">${s.note || '-'}</td>
+        <td data-label="操作"><button class="btn btn-danger btn-sm" onclick="deleteSalary(${s.id})">删除</button></td>
+      </tr>
+    `;
+    }).join('') + '</tbody></table>';
+}
+
+function showAddSalaryModal() {
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const selectEl = document.getElementById('salaryStaff');
+  
+  if (staff.length === 0) {
+    alert('请先添加美甲师');
+    return;
+  }
+  
+  selectEl.innerHTML = staff.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  
+  const now = new Date();
+  document.getElementById('salaryMonth').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  document.getElementById('salaryNote').value = '';
+  document.getElementById('addSalaryModal').classList.add('show');
+  
+  // 自动计算工资
+  updateSalaryCalc();
+}
+
+function updateSalaryCalc() {
+  const staffId = Number(document.getElementById('salaryStaff').value);
+  const month = document.getElementById('salaryMonth').value;
+  
+  if (!staffId || !month) return;
+  
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const staffMember = staff.find(s => s.id === staffId);
+  if (!staffMember) return;
+  
+  const baseSalary = staffMember.baseSalary || 0;
+  const commission = getStaffCommission(staffId, month);
+  const total = baseSalary + commission;
+  
+  document.getElementById('salaryAmount').value = total;
+  document.getElementById('salaryCalcNote').textContent = 
+    '底薪 ¥' + baseSalary + ' + 提成 ¥' + commission + ' = ¥' + total;
+}
+
+function addSalary(event) {
+  event.preventDefault();
+  
+  const staffId = Number(document.getElementById('salaryStaff').value);
+  const month = document.getElementById('salaryMonth').value;
+  const amount = Number(document.getElementById('salaryAmount').value);
+  const note = document.getElementById('salaryNote').value;
+  
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const staffMember = staff.find(s => s.id === staffId);
+  const baseSalary = staffMember ? (staffMember.baseSalary || 0) : 0;
+  const commission = getStaffCommission(staffId, month);
+  const stats = getStaffServiceStats(staffId, month);
+  
+  let salaries = loadData(STORAGE_KEYS.SALARIES);
+  salaries.push({
+    id: Date.now(),
+    staffId,
+    month,
+    amount,
+    baseSalary,
+    commission,
+    serviceCount: stats.count,
+    serviceAmount: stats.amount,
+    note
+  });
+  saveData(STORAGE_KEYS.SALARIES, salaries);
+  
+  closeModal('addSalaryModal');
+  renderSalaryList();
+}
+
+function deleteSalary(id) {
+  if (!confirm('确定删除这条工资记录吗？')) return;
+  let salaries = loadData(STORAGE_KEYS.SALARIES);
+  salaries = salaries.filter(s => s.id !== id);
+  saveData(STORAGE_KEYS.SALARIES, salaries);
+  renderSalaryList();
+}
+
+// ==================== 会员扣卡 ====================
+function searchMembers() {
+  const searchVal = document.getElementById('memberSearch').value.toLowerCase();
+  const resultsEl = document.getElementById('memberSearchResults');
+  
+  if (!searchVal) {
+    resultsEl.innerHTML = '<div class="empty-state">请输入姓名或电话搜索会员</div>';
+    return;
+  }
+  
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  const filtered = customers.filter(c => 
+    c.name.toLowerCase().includes(searchVal) || 
+    c.phone.includes(searchVal)
+  );
+  
+  if (filtered.length === 0) {
+    resultsEl.innerHTML = '<div class="empty-state">未找到匹配的会员</div>';
+    return;
+  }
+  
+  resultsEl.innerHTML = filtered.map(c => `
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div style="display:flex; gap:12px;">
+          <div class="customer-avatar">${c.name.charAt(0)}</div>
+          <div>
+            <div style="font-size:15px;font-weight:600;">${c.name}</div>
+            <div style="font-size:12px;color:#999;">${c.phone}</div>
+            <div style="margin-top:6px;">
+              <span class="customer-tag">${c.source || '未知来源'}</span>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:12px;color:#999;">当前余额</div>
+          <div style="font-size:20px;font-weight:500;color:#2c2c2c;letter-spacing:0.5px;">¥${c.balance || 0}</div>
+        </div>
+      </div>
+      <div class="balance-adjust">
+        <button class="btn btn-secondary btn-sm" onclick="adjustBalance(${c.id}, 'add')">充值</button>
+        <button class="btn btn-danger btn-sm" onclick="adjustBalance(${c.id}, 'subtract')">扣减</button>
+        <input type="number" class="input" id="adjustAmount_${c.id}" placeholder="金额" style="width:120px;">
+        <input type="text" class="input" id="adjustNote_${c.id}" placeholder="备注（可选）" style="flex:1;">
+      </div>
+    </div>
+  `).join('');
+}
+
+function adjustBalance(customerId, type) {
+  const amountEl = document.getElementById('adjustAmount_' + customerId);
+  const noteEl = document.getElementById('adjustNote_' + customerId);
+  const amount = Number(amountEl.value);
+  
+  if (!amount || amount <= 0) {
+    alert('请输入有效金额');
+    return;
+  }
+  
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  const customer = customers.find(c => c.id === customerId);
+  if (!customer) return;
+  
+  const changeAmount = type === 'add' ? amount : -amount;
+  const newBalance = (customer.balance || 0) + changeAmount;
+  
+  if (type === 'subtract' && newBalance < 0) {
+    alert('余额不足！');
+    return;
+  }
+  
+  customer.balance = newBalance;
+  customer.records = customer.records || [];
+  customer.records.unshift({
+    date: formatDate(new Date()),
+    service: (type === 'add' ? '会员卡充值' : '会员卡扣减') + (noteEl.value ? ' - ' + noteEl.value : ''),
+    amount: changeAmount
+  });
+  
+  saveData(STORAGE_KEYS.CUSTOMERS, customers);
+  
+  alert((type === 'add' ? '充值' : '扣减') + '成功！当前余额：¥' + newBalance);
+  amountEl.value = '';
+  noteEl.value = '';
+  searchMembers();
+}
+
+// ==================== 营业额统计 ====================
+let revenueTab = 'day';
+
+// 获取所有会员充值记录
+function getAllRecharges() {
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  const recharges = [];
+  customers.forEach(c => {
+    if (c.records) {
+      c.records.forEach(r => {
+        if (r.service && r.service.indexOf('会员卡充值') === 0 && r.amount > 0) {
+          recharges.push({
+            date: r.date,
+            amount: r.amount,
+            customerName: c.name
+          });
+        }
+      });
+    }
+  });
+  return recharges;
+}
+
+// 获取指定日期范围内的服务收入（已到达且非会员卡抵扣）
+function getServiceRevenue(startDate, endDate) {
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  return appointments
+    .filter(a => a.status === 'arrived' && !a.useMemberCard && a.date >= startDate && a.date <= endDate)
+    .reduce((sum, a) => sum + Number(a.price), 0);
+}
+
+// 获取指定日期范围内的会员充值收入
+function getRechargeRevenue(startDate, endDate) {
+  const recharges = getAllRecharges();
+  return recharges
+    .filter(r => r.date >= startDate && r.date <= endDate)
+    .reduce((sum, r) => sum + Number(r.amount), 0);
+}
+
+function renderRevenue() {
+  const now = new Date();
+  const today = formatDate(now);
+  
+  // 今日
+  const todayService = getServiceRevenue(today, today);
+  const todayRecharge = getRechargeRevenue(today, today);
+  const todayRevenue = todayService + todayRecharge;
+  document.getElementById('statTodayRevenue').innerHTML = '¥' + todayRevenue +
+    '<div style="font-size:11px;color:#999;font-weight:normal;margin-top:2px;">服务¥' + todayService + ' · 充值¥' + todayRecharge + '</div>';
+  
+  // 本周
+  const weekDates = getWeekDates(now);
+  const weekStart = formatDate(weekDates[0]);
+  const weekEnd = formatDate(weekDates[6]);
+  const weekService = getServiceRevenue(weekStart, weekEnd);
+  const weekRecharge = getRechargeRevenue(weekStart, weekEnd);
+  const weekRevenue = weekService + weekRecharge;
+  document.getElementById('statWeekRevenue').innerHTML = '¥' + weekRevenue +
+    '<div style="font-size:11px;color:#999;font-weight:normal;margin-top:2px;">服务¥' + weekService + ' · 充值¥' + weekRecharge + '</div>';
+  
+  // 本月
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthStartStr = formatDate(monthStart);
+  const monthEndStr = formatDate(now);
+  const monthService = getServiceRevenue(monthStartStr, '9999-12-31');
+  const monthRecharge = getRechargeRevenue(monthStartStr, '9999-12-31');
+  const monthRevenue = monthService + monthRecharge;
+  document.getElementById('statMonthRevenue').innerHTML = '¥' + monthRevenue +
+    '<div style="font-size:11px;color:#999;font-weight:normal;margin-top:2px;">服务¥' + monthService + ' · 充值¥' + monthRecharge + '</div>';
+  
+  // 本年
+  const yearStart = new Date(now.getFullYear(), 0, 1);
+  const yearStartStr = formatDate(yearStart);
+  const yearService = getServiceRevenue(yearStartStr, '9999-12-31');
+  const yearRecharge = getRechargeRevenue(yearStartStr, '9999-12-31');
+  const yearRevenue = yearService + yearRecharge;
+  document.getElementById('statYearRevenue').innerHTML = '¥' + yearRevenue +
+    '<div style="font-size:11px;color:#999;font-weight:normal;margin-top:2px;">服务¥' + yearService + ' · 充值¥' + yearRecharge + '</div>';
+  
+  renderRevenueChart();
+}
+
+function switchRevenueTab(tab) {
+  revenueTab = tab;
+  document.querySelectorAll('.revenue-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderRevenueChart();
+}
+
+function renderRevenueChart() {
+  const chartEl = document.getElementById('revenueChart');
+  let data = [];
+  let maxValue = 0;
+  
+  if (revenueTab === 'day') {
+    // 最近7天
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = formatDate(d);
+      const serviceRev = getServiceRevenue(dateStr, dateStr);
+      const rechargeRev = getRechargeRevenue(dateStr, dateStr);
+      const total = serviceRev + rechargeRev;
+      data.push({ label: (d.getMonth()+1) + '/' + d.getDate(), value: total, service: serviceRev, recharge: rechargeRev });
+      maxValue = Math.max(maxValue, total);
+    }
+  } else if (revenueTab === 'week') {
+    // 最近8周
+    for (let i = 7; i >= 0; i--) {
+      const base = new Date();
+      base.setDate(base.getDate() - i * 7);
+      const weekDates = getWeekDates(base);
+      const weekStart = formatDate(weekDates[0]);
+      const weekEnd = formatDate(weekDates[6]);
+      const serviceRev = getServiceRevenue(weekStart, weekEnd);
+      const rechargeRev = getRechargeRevenue(weekStart, weekEnd);
+      const total = serviceRev + rechargeRev;
+      data.push({ label: '第' + getWeekNumber(weekDates[0]) + '周', value: total, service: serviceRev, recharge: rechargeRev });
+      maxValue = Math.max(maxValue, total);
+    }
+  } else if (revenueTab === 'month') {
+    // 最近12个月
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+      const monthStart = formatDate(d);
+      const monthEnd = formatDate(new Date(nextMonth.getTime() - 86400000));
+      const serviceRev = getServiceRevenue(monthStart, monthEnd);
+      const rechargeRev = getRechargeRevenue(monthStart, monthEnd);
+      const total = serviceRev + rechargeRev;
+      data.push({ label: (d.getMonth()+1) + '月', value: total, service: serviceRev, recharge: rechargeRev });
+      maxValue = Math.max(maxValue, total);
+    }
+  } else if (revenueTab === 'year') {
+    // 最近5年
+    const now = new Date();
+    for (let i = 4; i >= 0; i--) {
+      const year = now.getFullYear() - i;
+      const yearStart = year + '-01-01';
+      const yearEnd = year + '-12-31';
+      const serviceRev = getServiceRevenue(yearStart, yearEnd);
+      const rechargeRev = getRechargeRevenue(yearStart, yearEnd);
+      const total = serviceRev + rechargeRev;
+      data.push({ label: year + '年', value: total, service: serviceRev, recharge: rechargeRev });
+      maxValue = Math.max(maxValue, total);
+    }
+  }
+  
+  const maxHeight = 160;
+  chartEl.innerHTML = data.map(d => {
+    const height = maxValue > 0 ? (d.value / maxValue) * maxHeight : 4;
+    const serviceHeight = maxValue > 0 ? (d.service / maxValue) * maxHeight : 0;
+    const rechargeHeight = maxValue > 0 ? (d.recharge / maxValue) * maxHeight : 0;
+    return `
+      <div class="bar-item">
+        <div class="bar-value">¥${d.value}</div>
+        <div class="bar" style="height:${height}px; position:relative; overflow:hidden;">
+          <div style="position:absolute; bottom:0; left:0; right:0; height:${serviceHeight}px; background:#2c2c2c;"></div>
+          <div style="position:absolute; bottom:${serviceHeight}px; left:0; right:0; height:${rechargeHeight}px; background:#8b7355;"></div>
+        </div>
+        <div class="bar-label">${d.label}</div>
+      </div>
+    `;
+  }).join('');
+  
+  // 添加图例
+  const legend = '<div style="display:flex; justify-content:center; gap:20px; margin-top:16px; font-size:12px; color:#666;">' +
+    '<span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#2c2c2c; display:inline-block; border-radius:2px;"></span>服务收入</span>' +
+    '<span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#8b7355; display:inline-block; border-radius:2px;"></span>会员充值</span>' +
+    '</div>';
+  chartEl.innerHTML += legend;
+}
+
+function getWeekNumber(d) {
+  const firstDayOfYear = new Date(d.getFullYear(), 0, 1);
+  const pastDaysOfYear = (d - firstDayOfYear) / 86400000;
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+// ==================== 采购统计 ====================
+let purchaseTab = 'tools';
+
+function renderPurchases() {
+  const purchases = loadData(STORAGE_KEYS.PURCHASES);
+  const now = new Date();
+  
+  const filtered = purchases.filter(p => p.category === purchaseTab);
+  
+  // 统计
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthPurchases = purchases.filter(p => new Date(p.date) >= monthStart);
+  const monthTotal = monthPurchases.reduce((sum, p) => sum + p.price * p.qty, 0);
+  document.getElementById('purchaseMonthTotal').textContent = '¥' + monthTotal;
+  
+  const yearStart = new Date(now.getFullYear(), 0, 1);
+  const yearPurchases = purchases.filter(p => new Date(p.date) >= yearStart);
+  const yearTotal = yearPurchases.reduce((sum, p) => sum + p.price * p.qty, 0);
+  document.getElementById('purchaseYearTotal').textContent = '¥' + yearTotal;
+  
+  document.getElementById('purchaseCount').textContent = purchases.length;
+  
+  // 列表
+  const listEl = document.getElementById('purchaseList');
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">暂无该分类采购记录</div>';
+    return;
+  }
+  
+  const sorted = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  listEl.innerHTML = '<table><thead><tr><th>日期</th><th>物品名称</th><th>数量</th><th>单价</th><th>小计</th><th>备注</th><th>操作</th></tr></thead><tbody>' +
+    sorted.map(p => `
+      <tr>
+        <td>${p.date}</td>
+        <td>${p.name}</td>
+        <td>${p.qty}</td>
+        <td>¥${p.price}</td>
+        <td style="color:#2c2c2c;font-weight:500;">¥${p.price * p.qty}</td>
+        <td>${p.note || '-'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deletePurchase(${p.id})">删除</button></td>
+      </tr>
+    `).join('') + '</tbody></table>';
+}
+
+function switchPurchaseTab(tab) {
+  purchaseTab = tab;
+  document.querySelectorAll('.purchase-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderPurchases();
+}
+
+function showAddPurchaseModal() {
+  document.getElementById('purchaseName').value = '';
+  document.getElementById('purchaseQty').value = '1';
+  document.getElementById('purchasePrice').value = '0';
+  document.getElementById('purchaseDate').value = formatDate(new Date());
+  document.getElementById('purchaseNote').value = '';
+  document.getElementById('addPurchaseModal').classList.add('show');
+}
+
+function addPurchase(event) {
+  event.preventDefault();
+  
+  const category = document.getElementById('purchaseCategory').value;
+  const name = document.getElementById('purchaseName').value;
+  const qty = Number(document.getElementById('purchaseQty').value);
+  const price = Number(document.getElementById('purchasePrice').value);
+  const date = document.getElementById('purchaseDate').value;
+  const note = document.getElementById('purchaseNote').value;
+  
+  let purchases = loadData(STORAGE_KEYS.PURCHASES);
+  purchases.push({
+    id: Date.now(),
+    category,
+    name,
+    qty,
+    price,
+    date,
+    note
+  });
+  saveData(STORAGE_KEYS.PURCHASES, purchases);
+  
+  closeModal('addPurchaseModal');
+  renderPurchases();
+}
+
+function deletePurchase(id) {
+  if (!confirm('确定删除这条采购记录吗？')) return;
+  let purchases = loadData(STORAGE_KEYS.PURCHASES);
+  purchases = purchases.filter(p => p.id !== id);
+  saveData(STORAGE_KEYS.PURCHASES, purchases);
+  renderPurchases();
+}
+
+// ==================== 运营成本 ====================
+function renderExpenses() {
+  const expenses = loadData(STORAGE_KEYS.EXPENSES);
+  const now = new Date();
+  
+  // 本月合计
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthExpenses = expenses.filter(e => new Date(e.date) >= monthStart);
+  const monthTotal = monthExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  document.getElementById('expenseMonthTotal').textContent = '¥' + monthTotal;
+  
+  // 本年合计
+  const yearStart = new Date(now.getFullYear(), 0, 1);
+  const yearExpenses = expenses.filter(e => new Date(e.date) >= yearStart);
+  const yearTotal = yearExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  document.getElementById('expenseYearTotal').textContent = '¥' + yearTotal;
+  
+  // 列表
+  const listEl = document.getElementById('expenseList');
+  if (expenses.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">暂无成本记录</div>';
+    return;
+  }
+  
+  const sorted = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  const categoryLabels = {
+    '房租': '房租',
+    '水电': '水电',
+    '物料采购': '物料采购',
+    '其他': '其他'
+  };
+  
+  listEl.innerHTML = '<table><thead><tr><th>日期</th><th>类别</th><th>金额</th><th>备注</th><th>操作</th></tr></thead><tbody>' +
+    sorted.map(e => `
+      <tr>
+        <td>${e.date}</td>
+        <td>${categoryLabels[e.category] || e.category}</td>
+        <td style="color:#2c2c2c;font-weight:500;">¥${e.amount}</td>
+        <td>${e.note || '-'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteExpense(${e.id})">删除</button></td>
+      </tr>
+    `).join('') + '</tbody></table>';
+}
+
+function showAddExpenseModal() {
+  document.getElementById('expenseCategory').value = '房租';
+  document.getElementById('expenseAmount').value = '';
+  document.getElementById('expenseDate').value = formatDate(new Date());
+  document.getElementById('expenseNote').value = '';
+  document.getElementById('addExpenseModal').classList.add('show');
+}
+
+function addExpense(event) {
+  event.preventDefault();
+  
+  const category = document.getElementById('expenseCategory').value;
+  const amount = Number(document.getElementById('expenseAmount').value);
+  const date = document.getElementById('expenseDate').value;
+  const note = document.getElementById('expenseNote').value;
+  
+  let expenses = loadData(STORAGE_KEYS.EXPENSES);
+  expenses.push({
+    id: Date.now(),
+    category,
+    amount,
+    date,
+    note
+  });
+  saveData(STORAGE_KEYS.EXPENSES, expenses);
+  
+  closeModal('addExpenseModal');
+  renderExpenses();
+}
+
+function deleteExpense(id) {
+  if (!confirm('确定删除这条成本记录吗？')) return;
+  let expenses = loadData(STORAGE_KEYS.EXPENSES);
+  expenses = expenses.filter(e => e.id !== id);
+  saveData(STORAGE_KEYS.EXPENSES, expenses);
+  renderExpenses();
+}
+
+// ==================== 净利润计算 ====================
+// 获取指定日期范围内的总收入（服务收入 + 会员充值）
+function getTotalRevenue(startDate, endDate) {
+  const serviceRev = getServiceRevenue(startDate, endDate);
+  const rechargeRev = getRechargeRevenue(startDate, endDate);
+  return serviceRev + rechargeRev;
+}
+
+// 获取指定日期范围内的总支出（运营成本 + 工资 + 采购）
+function getTotalExpense(startDate, endDate) {
+  const expenses = loadData(STORAGE_KEYS.EXPENSES);
+  const salaries = loadData(STORAGE_KEYS.SALARIES);
+  const purchases = loadData(STORAGE_KEYS.PURCHASES);
+  
+  // 运营成本
+  const expenseTotal = expenses
+    .filter(e => e.date >= startDate && e.date <= endDate)
+    .reduce((sum, e) => sum + Number(e.amount), 0);
+  
+  // 工资（根据发放月份匹配日期范围）
+  const salaryTotal = salaries
+    .filter(s => {
+      const monthStr = s.month + '-01';
+      return monthStr >= startDate && monthStr <= endDate;
+    })
+    .reduce((sum, s) => sum + Number(s.amount), 0);
+  
+  // 采购支出
+  const purchaseTotal = purchases
+    .filter(p => p.date >= startDate && p.date <= endDate)
+    .reduce((sum, p) => sum + Number(p.price) * Number(p.qty), 0);
+  
+  return expenseTotal + salaryTotal + purchaseTotal;
+}
+
+// 获取指定日期范围内的净利润
+function getNetProfit(startDate, endDate) {
+  return getTotalRevenue(startDate, endDate) - getTotalExpense(startDate, endDate);
+}
+
+// ==================== 台账管理 ====================
+let ledgerTab = 'day';
+
+function renderLedger() {
+  const now = new Date();
+  const today = formatDate(now);
+  
+  // 今日净利润
+  const todayProfit = getNetProfit(today, today);
+  document.getElementById('ledgerTodayProfit').textContent = '¥' + todayProfit;
+  
+  // 本月净利润
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthStartStr = formatDate(monthStart);
+  const monthProfit = getNetProfit(monthStartStr, '9999-12-31');
+  document.getElementById('ledgerMonthProfit').textContent = '¥' + monthProfit;
+  
+  // 本年净利润
+  const yearStart = new Date(now.getFullYear(), 0, 1);
+  const yearStartStr = formatDate(yearStart);
+  const yearProfit = getNetProfit(yearStartStr, '9999-12-31');
+  document.getElementById('ledgerYearProfit').textContent = '¥' + yearProfit;
+  
+  // 累计净利润
+  const totalProfit = getNetProfit('0000-01-01', '9999-12-31');
+  document.getElementById('ledgerTotalProfit').textContent = '¥' + totalProfit;
+  
+  // 同比环比
+  renderLedgerCompare();
+  
+  // 趋势图
+  renderLedgerChart();
+  
+  // 收支明细 - 初始化日期范围为本月
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  document.getElementById('ledgerStartDate').value = monthStartStr;
+  document.getElementById('ledgerEndDate').value = formatDate(monthEnd);
+  renderLedgerDetail();
+}
+
+function switchLedgerTab(tab) {
+  ledgerTab = tab;
+  document.querySelectorAll('#page-ledger .revenue-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderLedgerChart();
+}
+
+function renderLedgerChart() {
+  const chartEl = document.getElementById('ledgerChart');
+  let data = [];
+  let maxAbsValue = 0;
+  
+  if (ledgerTab === 'day') {
+    // 最近7天
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = formatDate(d);
+      const profit = getNetProfit(dateStr, dateStr);
+      data.push({ label: (d.getMonth()+1) + '/' + d.getDate(), value: profit });
+      maxAbsValue = Math.max(maxAbsValue, Math.abs(profit));
+    }
+  } else if (ledgerTab === 'week') {
+    // 最近8周
+    for (let i = 7; i >= 0; i--) {
+      const base = new Date();
+      base.setDate(base.getDate() - i * 7);
+      const weekDates = getWeekDates(base);
+      const weekStart = formatDate(weekDates[0]);
+      const weekEnd = formatDate(weekDates[6]);
+      const profit = getNetProfit(weekStart, weekEnd);
+      data.push({ label: '第' + getWeekNumber(weekDates[0]) + '周', value: profit });
+      maxAbsValue = Math.max(maxAbsValue, Math.abs(profit));
+    }
+  } else if (ledgerTab === 'month') {
+    // 最近12个月
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+      const monthStart = formatDate(d);
+      const monthEnd = formatDate(new Date(nextMonth.getTime() - 86400000));
+      const profit = getNetProfit(monthStart, monthEnd);
+      data.push({ label: (d.getMonth()+1) + '月', value: profit });
+      maxAbsValue = Math.max(maxAbsValue, Math.abs(profit));
+    }
+  } else if (ledgerTab === 'year') {
+    // 最近5年
+    const now = new Date();
+    for (let i = 4; i >= 0; i--) {
+      const year = now.getFullYear() - i;
+      const yearStart = year + '-01-01';
+      const yearEnd = year + '-12-31';
+      const profit = getNetProfit(yearStart, yearEnd);
+      data.push({ label: year + '年', value: profit });
+      maxAbsValue = Math.max(maxAbsValue, Math.abs(profit));
+    }
+  }
+  
+  const maxHeight = 160;
+  chartEl.innerHTML = data.map(d => {
+    const isPositive = d.value >= 0;
+    const height = maxAbsValue > 0 ? (Math.abs(d.value) / maxAbsValue) * maxHeight : 4;
+    const barColor = isPositive ? '#4caf50' : '#e57373';
+    return `
+      <div class="bar-item">
+        <div class="bar-value" style="color:${isPositive ? '#4caf50' : '#e57373'};">${isPositive ? '+' : ''}¥${d.value}</div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; width:100%;">
+          <div class="bar" style="height:${height}px; background:${barColor}; width:100%; max-width:40px; border-radius:2px 2px 0 0; min-height:4px;"></div>
+        </div>
+        <div class="bar-label">${d.label}</div>
+      </div>
+    `;
+  }).join('');
+  
+  // 添加图例
+  const legend = '<div style="display:flex; justify-content:center; gap:20px; margin-top:16px; font-size:12px; color:#666;">' +
+    '<span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#4caf50; display:inline-block; border-radius:2px;"></span>盈利</span>' +
+    '<span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#e57373; display:inline-block; border-radius:2px;"></span>亏损</span>' +
+    '</div>';
+  chartEl.innerHTML += legend;
+}
+
+function renderLedgerCompare() {
+  const now = new Date();
+  
+  // 本月 vs 上月
+  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const thisMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+  
+  const thisMonthProfit = getNetProfit(formatDate(thisMonthStart), formatDate(thisMonthEnd));
+  const lastMonthProfit = getNetProfit(formatDate(lastMonthStart), formatDate(lastMonthEnd));
+  
+  const monthDiff = thisMonthProfit - lastMonthProfit;
+  const monthDiffEl = document.getElementById('ledgerMonthCompare');
+  const monthRateEl = document.getElementById('ledgerMonthCompareRate');
+  
+  if (monthDiff >= 0) {
+    monthDiffEl.innerHTML = '<span style="color:#4caf50;">+¥' + monthDiff + '</span>';
+  } else {
+    monthDiffEl.innerHTML = '<span style="color:#e57373;">¥' + monthDiff + '</span>';
+  }
+  
+  if (lastMonthProfit !== 0) {
+    const rate = ((monthDiff / Math.abs(lastMonthProfit)) * 100).toFixed(1);
+    const rateColor = monthDiff >= 0 ? '#4caf50' : '#e57373';
+    monthRateEl.innerHTML = '<span style="color:' + rateColor + ';">' + (monthDiff >= 0 ? '↑' : '↓') + ' ' + Math.abs(rate) + '%</span> 较上月';
+  } else {
+    monthRateEl.innerHTML = '--';
+  }
+  
+  // 本年 vs 去年
+  const thisYearStart = new Date(now.getFullYear(), 0, 1);
+  const thisYearEnd = new Date(now.getFullYear(), 11, 31);
+  const lastYearStart = new Date(now.getFullYear() - 1, 0, 1);
+  const lastYearEnd = new Date(now.getFullYear() - 1, 11, 31);
+  
+  const thisYearProfit = getNetProfit(formatDate(thisYearStart), formatDate(thisYearEnd));
+  const lastYearProfit = getNetProfit(formatDate(lastYearStart), formatDate(lastYearEnd));
+  
+  const yearDiff = thisYearProfit - lastYearProfit;
+  const yearDiffEl = document.getElementById('ledgerYearCompare');
+  const yearRateEl = document.getElementById('ledgerYearCompareRate');
+  
+  if (yearDiff >= 0) {
+    yearDiffEl.innerHTML = '<span style="color:#4caf50;">+¥' + yearDiff + '</span>';
+  } else {
+    yearDiffEl.innerHTML = '<span style="color:#e57373;">¥' + yearDiff + '</span>';
+  }
+  
+  if (lastYearProfit !== 0) {
+    const rate = ((yearDiff / Math.abs(lastYearProfit)) * 100).toFixed(1);
+    const rateColor = yearDiff >= 0 ? '#4caf50' : '#e57373';
+    yearRateEl.innerHTML = '<span style="color:' + rateColor + ';">' + (yearDiff >= 0 ? '↑' : '↓') + ' ' + Math.abs(rate) + '%</span> 较去年';
+  } else {
+    yearRateEl.innerHTML = '--';
+  }
+}
+
+function renderLedgerDetail() {
+  const startDate = document.getElementById('ledgerStartDate').value;
+  const endDate = document.getElementById('ledgerEndDate').value;
+  
+  if (!startDate || !endDate) return;
+  
+  const detailEl = document.getElementById('ledgerDetail');
+  
+  // 收入明细
+  const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+  const recharges = getAllRecharges();
+  
+  // 收入 - 服务收入（已到达、非会员卡）
+  const serviceIncome = appointments
+    .filter(a => a.status === 'arrived' && !a.useMemberCard && a.date >= startDate && a.date <= endDate)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  
+  // 收入 - 会员充值
+  const rechargeIncome = recharges
+    .filter(r => r.date >= startDate && r.date <= endDate)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  
+  const totalServiceIncome = serviceIncome.reduce((sum, a) => sum + Number(a.price), 0);
+  const totalRechargeIncome = rechargeIncome.reduce((sum, r) => sum + Number(r.amount), 0);
+  const totalIncome = totalServiceIncome + totalRechargeIncome;
+  
+  // 支出明细
+  const expenses = loadData(STORAGE_KEYS.EXPENSES);
+  const salaries = loadData(STORAGE_KEYS.SALARIES);
+  const purchases = loadData(STORAGE_KEYS.PURCHASES);
+  
+  // 支出 - 运营成本
+  const expenseList = expenses
+    .filter(e => e.date >= startDate && e.date <= endDate)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  
+  // 支出 - 工资
+  const salaryList = salaries
+    .filter(s => {
+      const monthStr = s.month + '-01';
+      return monthStr >= startDate && monthStr <= endDate;
+    })
+    .sort((a, b) => b.month.localeCompare(a.month));
+  
+  // 支出 - 采购
+  const purchaseList = purchases
+    .filter(p => p.date >= startDate && p.date <= endDate)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  
+  const totalExpense = expenseList.reduce((sum, e) => sum + Number(e.amount), 0) +
+    salaryList.reduce((sum, s) => sum + Number(s.amount), 0) +
+    purchaseList.reduce((sum, p) => sum + Number(p.price) * Number(p.qty), 0);
+  
+  const netProfit = totalIncome - totalExpense;
+  
+  const staff = loadData(STORAGE_KEYS.STAFF);
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  
+  let html = '';
+  
+  // 汇总
+  html += '<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:20px;">';
+  html += '<div style="padding:16px; background:#f8faf8; border-radius:6px; text-align:center; border:1px solid #e0e8e0;">';
+  html += '<div style="font-size:12px; color:#999; margin-bottom:6px;">总收入</div>';
+  html += '<div style="font-size:20px; font-weight:500; color:#4caf50;">¥' + totalIncome + '</div>';
+  html += '</div>';
+  html += '<div style="padding:16px; background:#faf5f5; border-radius:6px; text-align:center; border:1px solid #f0e0e0;">';
+  html += '<div style="font-size:12px; color:#999; margin-bottom:6px;">总支出</div>';
+  html += '<div style="font-size:20px; font-weight:500; color:#e57373;">¥' + totalExpense + '</div>';
+  html += '</div>';
+  html += '<div style="padding:16px; background:#faf8f5; border-radius:6px; text-align:center; border:1px solid #ebe6de;">';
+  html += '<div style="font-size:12px; color:#999; margin-bottom:6px;">净利润</div>';
+  html += '<div style="font-size:20px; font-weight:500; color:' + (netProfit >= 0 ? '#4caf50' : '#e57373') + ';">' + (netProfit >= 0 ? '+' : '') + '¥' + netProfit + '</div>';
+  html += '</div>';
+  html += '</div>';
+  
+  // 收入明细
+  html += '<div style="margin-bottom:24px;">';
+  html += '<div style="font-size:14px; font-weight:500; margin-bottom:12px; color:#2c2c2c;">收入明细</div>';
+  
+  // 服务收入
+  html += '<div style="margin-bottom:16px;">';
+  html += '<div style="font-size:13px; color:#666; margin-bottom:8px;">服务收入（营业额） <span style="color:#4caf50; font-weight:500;">¥' + totalServiceIncome + '</span></div>';
+  if (serviceIncome.length === 0) {
+    html += '<div style="padding:16px; text-align:center; color:#b5ada0; font-size:12px; background:#faf8f5; border-radius:4px;">暂无服务收入</div>';
+  } else {
+    html += '<table style="font-size:12px;"><thead><tr><th style="padding:8px;">日期</th><th style="padding:8px;">顾客</th><th style="padding:8px;">项目</th><th style="padding:8px;">金额</th></tr></thead><tbody>';
+    serviceIncome.slice(0, 20).forEach(a => {
+      const customer = customers.find(c => c.id === a.customerId);
+      const custName = customer ? customer.name : '未知';
+      html += '<tr><td style="padding:8px;">' + a.date + '</td><td style="padding:8px;">' + custName + '</td><td style="padding:8px;">' + (a.service || '-') + '</td><td style="padding:8px; color:#4caf50;">¥' + a.price + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    if (serviceIncome.length > 20) {
+      html += '<div style="text-align:center; padding:8px; color:#999; font-size:12px;">共 ' + serviceIncome.length + ' 条，仅显示前 20 条</div>';
+    }
+  }
+  html += '</div>';
+  
+  // 会员充值
+  html += '<div>';
+  html += '<div style="font-size:13px; color:#666; margin-bottom:8px;">会员充值 <span style="color:#4caf50; font-weight:500;">¥' + totalRechargeIncome + '</span></div>';
+  if (rechargeIncome.length === 0) {
+    html += '<div style="padding:16px; text-align:center; color:#b5ada0; font-size:12px; background:#faf8f5; border-radius:4px;">暂无充值记录</div>';
+  } else {
+    html += '<table style="font-size:12px;"><thead><tr><th style="padding:8px;">日期</th><th style="padding:8px;">顾客</th><th style="padding:8px;">类型</th><th style="padding:8px;">金额</th></tr></thead><tbody>';
+    rechargeIncome.slice(0, 20).forEach(r => {
+      const customer = customers.find(c => c.id === r.customerId);
+      const custName = customer ? customer.name : '未知';
+      html += '<tr><td style="padding:8px;">' + r.date + '</td><td style="padding:8px;">' + custName + '</td><td style="padding:8px;">会员充值</td><td style="padding:8px; color:#4caf50;">¥' + r.amount + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    if (rechargeIncome.length > 20) {
+      html += '<div style="text-align:center; padding:8px; color:#999; font-size:12px;">共 ' + rechargeIncome.length + ' 条，仅显示前 20 条</div>';
+    }
+  }
+  html += '</div>';
+  html += '</div>';
+  
+  // 支出明细
+  html += '<div>';
+  html += '<div style="font-size:14px; font-weight:500; margin-bottom:12px; color:#2c2c2c;">支出明细</div>';
+  
+  // 运营成本
+  html += '<div style="margin-bottom:16px;">';
+  const expenseTotal = expenseList.reduce((sum, e) => sum + Number(e.amount), 0);
+  html += '<div style="font-size:13px; color:#666; margin-bottom:8px;">运营成本 <span style="color:#e57373; font-weight:500;">¥' + expenseTotal + '</span></div>';
+  if (expenseList.length === 0) {
+    html += '<div style="padding:16px; text-align:center; color:#b5ada0; font-size:12px; background:#faf8f5; border-radius:4px;">暂无运营成本</div>';
+  } else {
+    html += '<table style="font-size:12px;"><thead><tr><th style="padding:8px;">日期</th><th style="padding:8px;">类别</th><th style="padding:8px;">备注</th><th style="padding:8px;">金额</th></tr></thead><tbody>';
+    expenseList.slice(0, 20).forEach(e => {
+      html += '<tr><td style="padding:8px;">' + e.date + '</td><td style="padding:8px;">' + e.category + '</td><td style="padding:8px;">' + (e.note || '-') + '</td><td style="padding:8px; color:#e57373;">¥' + e.amount + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    if (expenseList.length > 20) {
+      html += '<div style="text-align:center; padding:8px; color:#999; font-size:12px;">共 ' + expenseList.length + ' 条，仅显示前 20 条</div>';
+    }
+  }
+  html += '</div>';
+  
+  // 工资
+  html += '<div style="margin-bottom:16px;">';
+  const salaryTotal = salaryList.reduce((sum, s) => sum + Number(s.amount), 0);
+  html += '<div style="font-size:13px; color:#666; margin-bottom:8px;">工资发放 <span style="color:#e57373; font-weight:500;">¥' + salaryTotal + '</span></div>';
+  if (salaryList.length === 0) {
+    html += '<div style="padding:16px; text-align:center; color:#b5ada0; font-size:12px; background:#faf8f5; border-radius:4px;">暂无工资记录</div>';
+  } else {
+    html += '<table style="font-size:12px;"><thead><tr><th style="padding:8px;">月份</th><th style="padding:8px;">美甲师</th><th style="padding:8px;">备注</th><th style="padding:8px;">金额</th></tr></thead><tbody>';
+    salaryList.slice(0, 20).forEach(s => {
+      const staffMember = staff.find(st => st.id === s.staffId);
+      const staffName = staffMember ? staffMember.name : '未知';
+      html += '<tr><td style="padding:8px;">' + s.month + '</td><td style="padding:8px;">' + staffName + '</td><td style="padding:8px;">' + (s.note || '-') + '</td><td style="padding:8px; color:#e57373;">¥' + s.amount + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    if (salaryList.length > 20) {
+      html += '<div style="text-align:center; padding:8px; color:#999; font-size:12px;">共 ' + salaryList.length + ' 条，仅显示前 20 条</div>';
+    }
+  }
+  html += '</div>';
+  
+  // 采购
+  html += '<div>';
+  const purchaseTotal = purchaseList.reduce((sum, p) => sum + Number(p.price) * Number(p.qty), 0);
+  html += '<div style="font-size:13px; color:#666; margin-bottom:8px;">采购支出 <span style="color:#e57373; font-weight:500;">¥' + purchaseTotal + '</span></div>';
+  if (purchaseList.length === 0) {
+    html += '<div style="padding:16px; text-align:center; color:#b5ada0; font-size:12px; background:#faf8f5; border-radius:4px;">暂无采购记录</div>';
+  } else {
+    html += '<table style="font-size:12px;"><thead><tr><th style="padding:8px;">日期</th><th style="padding:8px;">物品</th><th style="padding:8px;">数量</th><th style="padding:8px;">小计</th></tr></thead><tbody>';
+    purchaseList.slice(0, 20).forEach(p => {
+      html += '<tr><td style="padding:8px;">' + p.date + '</td><td style="padding:8px;">' + p.name + '</td><td style="padding:8px;">' + p.qty + '</td><td style="padding:8px; color:#e57373;">¥' + (p.price * p.qty) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    if (purchaseList.length > 20) {
+      html += '<div style="text-align:center; padding:8px; color:#999; font-size:12px;">共 ' + purchaseList.length + ' 条，仅显示前 20 条</div>';
+    }
+  }
+  html += '</div>';
+  html += '</div>';
+  
+  detailEl.innerHTML = html;
+}
+
+// ==================== 客户来源统计 ====================
+function renderSourceStats() {
+  const customers = loadData(STORAGE_KEYS.CUSTOMERS);
+  const total = customers.length;
+  
+  const sources = {
+    '小红书': 0,
+    '抖音': 0,
+    '微信': 0,
+    '转介': 0,
+    '其他': 0
+  };
+  
+  customers.forEach(c => {
+    const source = c.source || '其他';
+    if (sources.hasOwnProperty(source)) {
+      sources[source]++;
+    } else {
+      sources['其他']++;
+    }
+  });
+  
+  document.getElementById('sourceTotal').textContent = total;
+  document.getElementById('sourceXhs').textContent = sources['小红书'];
+  document.getElementById('sourceDouyin').textContent = sources['抖音'];
+  document.getElementById('sourceWechat').textContent = (sources['微信'] + sources['转介']);
+  
+  // 条形图
+  const chartEl = document.getElementById('sourceChartBars');
+  const sourceList = [
+    { name: '小红书', value: sources['小红书'], class: 'xhs' },
+    { name: '抖音', value: sources['抖音'], class: 'douyin' },
+    { name: '微信', value: sources['微信'], class: 'wechat' },
+    { name: '转介', value: sources['转介'], class: 'referral' }
+  ];
+  
+  chartEl.innerHTML = sourceList.map(s => {
+    const percent = total > 0 ? (s.value / total * 100).toFixed(1) : 0;
+    return `
+      <div class="source-item">
+        <div class="source-name">${s.name}</div>
+        <div class="source-bar-bg">
+          <div class="source-bar-fill ${s.class}" style="width:${percent}%;"></div>
+        </div>
+        <div class="source-value">${s.value}人</div>
+      </div>
+    `;
+  }).join('');
+  
+  // 饼图 - 使用 conic-gradient
+  const pieEl = document.getElementById('sourcePie');
+  let currentDeg = 0;
+  const colors = {
+    '小红书': '#e57373',
+    '抖音': '#555',
+    '微信': '#81c784',
+    '转介': '#8b7355',
+    '其他': '#b5ada0'
+  };
+  
+  let gradientParts = [];
+  for (const source in sources) {
+    if (sources[source] > 0) {
+      const percent = sources[source] / total;
+      const endDeg = currentDeg + percent * 360;
+      gradientParts.push(`${colors[source]} ${currentDeg}deg ${endDeg}deg`);
+      currentDeg = endDeg;
+    }
+  }
+  pieEl.style.background = 'conic-gradient(' + gradientParts.join(', ') + ')';
+  
+  // 明细表
+  const detailTable = document.getElementById('sourceDetailTable');
+  detailTable.innerHTML = sourceList.concat([{ name: '其他', value: sources['其他'], class: '' }]).map(s => {
+    const percent = total > 0 ? (s.value / total * 100).toFixed(1) : 0;
+    return `
+      <tr>
+        <td>${s.name}</td>
+        <td>${s.value}</td>
+        <td>${percent}%</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ==================== 模态框通用 ====================
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('show');
+}
+
+// 点击模态框外部关闭
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('show');
+    }
+  });
+});
+
+// ==================== 侧边栏控制 ====================
+let sidebarState = 'expanded'; // expanded, collapsed
+let isMobile = false;
+
+function checkMobile() {
+  isMobile = window.innerWidth <= 768;
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  
+  if (isMobile) {
+    // 移动端默认收起
+    sidebar.classList.add('collapsed');
+    sidebarState = 'collapsed';
+    overlay.classList.remove('show');
+  } else {
+    // 桌面端默认展开
+    sidebar.classList.remove('collapsed');
+    sidebarState = 'expanded';
+    overlay.classList.remove('show');
+  }
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  
+  if (sidebarState === 'expanded') {
+    sidebar.classList.add('collapsed');
+    overlay.classList.remove('show');
+    sidebarState = 'collapsed';
+  } else {
+    sidebar.classList.remove('collapsed');
+    sidebarState = 'expanded';
+    if (isMobile) {
+      overlay.classList.add('show');
+    }
+  }
+}
+
+// 窗口大小改变时检查
+window.addEventListener('resize', function() {
+  const wasMobile = isMobile;
+  checkMobile();
+  // 如果从移动端切换到桌面端，确保遮罩层隐藏
+  if (wasMobile && !isMobile) {
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+});
+
+// ==================== 数据同步 ====================
+function openSyncModal() {
+  document.getElementById('syncModal').classList.add('show');
+  // 默认显示导出 tab
+  switchSyncTab('export');
+  // 清空之前的同步码
+  document.getElementById('syncCodeDisplay').textContent = '点击下方按钮生成同步码';
+  document.getElementById('syncCodeInput').value = '';
+}
+
+function switchSyncTab(tab) {
+  document.getElementById('syncTabExport').classList.toggle('active', tab === 'export');
+  document.getElementById('syncTabImport').classList.toggle('active', tab === 'import');
+  document.getElementById('syncExportSection').style.display = tab === 'export' ? 'block' : 'none';
+  document.getElementById('syncImportSection').style.display = tab === 'import' ? 'block' : 'none';
+}
+
+// 生成同步码：将所有数据编码为 base64 字符串
+function generateSyncCode() {
+  try {
+    const allData = {};
+    // 收集所有存储的数据
+    Object.values(STORAGE_KEYS).forEach(key => {
+      const data = localStorage.getItem(key);
+      if (data) {
+        allData[key] = JSON.parse(data);
+      }
+    });
+    // 加上版本号和时间戳
+    allData._syncInfo = {
+      version: '1.0',
+      generateTime: new Date().toISOString(),
+      dataVersion: localStorage.getItem('nail_data_version') || '1.0'
+    };
+    
+    const jsonStr = JSON.stringify(allData);
+    // 编码为 base64（处理中文）
+    const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
+    // 加上前缀标识
+    const syncCode = 'SCNL' + base64;
+    
+    document.getElementById('syncCodeDisplay').textContent = syncCode;
+    return syncCode;
+  } catch (e) {
+    alert('生成同步码失败：' + e.message);
+    return null;
+  }
+}
+
+// 复制同步码
+function copySyncCode() {
+  const code = document.getElementById('syncCodeDisplay').textContent;
+  if (!code || code === '点击下方按钮生成同步码') {
+    alert('请先生成同步码');
+    return;
+  }
+  
+  // 尝试使用 clipboard API
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(() => {
+      alert('同步码已复制到剪贴板');
+    }).catch(() => {
+      fallbackCopy(code);
+    });
+  } else {
+    fallbackCopy(code);
+  }
+}
+
+function fallbackCopy(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    alert('同步码已复制到剪贴板');
+  } catch (e) {
+    alert('复制失败，请手动复制');
+  }
+  document.body.removeChild(textarea);
+}
+
+// 清空输入
+function clearSyncInput() {
+  document.getElementById('syncCodeInput').value = '';
+}
+
+// 导入同步码
+function importSyncCode() {
+  const code = document.getElementById('syncCodeInput').value.trim();
+  if (!code) {
+    alert('请输入同步码');
+    return;
+  }
+  
+  if (!confirm('导入数据将覆盖当前所有数据，确定继续吗？')) {
+    return;
+  }
+  
+  try {
+    let base64 = code;
+    // 检查前缀
+    if (code.startsWith('SCNL')) {
+      base64 = code.substring(4);
+    }
+    
+    // 解码
+    const jsonStr = decodeURIComponent(escape(atob(base64)));
+    const allData = JSON.parse(jsonStr);
+    
+    // 验证数据格式
+    if (!allData._syncInfo) {
+      throw new Error('无效的同步码格式');
+    }
+    
+    // 恢复数据
+    Object.keys(allData).forEach(key => {
+      if (key === '_syncInfo') return;
+      localStorage.setItem(key, JSON.stringify(allData[key]));
+    });
+    
+    // 保存数据版本
+    if (allData._syncInfo.dataVersion) {
+      localStorage.setItem('nail_data_version', allData._syncInfo.dataVersion);
+    }
+    
+    alert('数据导入成功！页面即将刷新');
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
+    
+  } catch (e) {
+    alert('导入失败：同步码格式不正确，请检查是否完整复制');
+    console.error(e);
+  }
+}
+
+// ==================== 开屏启动页 ====================
+let splashShown = false;
+
+function showSplash() {
+  const splash = document.getElementById('splashScreen');
+  if (!splash) return;
+  splash.classList.remove('hide');
+}
+
+function hideSplash() {
+  const splash = document.getElementById('splashScreen');
+  if (!splash) return;
+  splash.classList.add('hide');
+  // 动画结束后移除
+  setTimeout(() => {
+    splash.style.display = 'none';
+  }, 500);
+}
+
+// ==================== 初始化 ====================
+function init() {
+  // 数据版本控制 - 版本变更时做数据迁移
+  const DATA_VERSION = '6.0';
+  const currentVersion = localStorage.getItem('nail_data_version');
+  if (currentVersion !== DATA_VERSION) {
+    // 数据迁移：给旧预约数据补上 status 和 useMemberCard 字段
+    const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+    let migrated = false;
+    appointments.forEach(apt => {
+      if (apt.status === undefined) {
+        apt.status = 'arrived'; // 旧数据视为已到达
+        apt.useMemberCard = false;
+        migrated = true;
+      }
+    });
+    if (migrated) {
+      saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+    }
+    // 数据迁移 v4.0：确保新数据字段存在
+    if (!localStorage.getItem(STORAGE_KEYS.EXPENSES)) {
+      saveData(STORAGE_KEYS.EXPENSES, []);
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SALARIES)) {
+      saveData(STORAGE_KEYS.SALARIES, []);
+    }
+    // 数据迁移 v5.0：美甲师数据新增底薪和提成比例字段
+    const staff = loadData(STORAGE_KEYS.STAFF);
+    let staffMigrated = false;
+    staff.forEach(s => {
+      if (s.baseSalary === undefined) {
+        s.baseSalary = 0;
+        staffMigrated = true;
+      }
+      if (s.commissionRate === undefined) {
+        s.commissionRate = 30;
+        staffMigrated = true;
+      }
+    });
+    if (staffMigrated) {
+      saveData(STORAGE_KEYS.STAFF, staff);
+    }
+    // 数据迁移 v5.0：工资记录新增字段
+    const salaries = loadData(STORAGE_KEYS.SALARIES);
+    let salaryMigrated = false;
+    salaries.forEach(s => {
+      if (s.baseSalary === undefined) {
+        s.baseSalary = 0;
+        salaryMigrated = true;
+      }
+      if (s.commission === undefined) {
+        s.commission = 0;
+        salaryMigrated = true;
+      }
+      if (s.serviceCount === undefined) {
+        s.serviceCount = 0;
+        salaryMigrated = true;
+      }
+      if (s.serviceAmount === undefined) {
+        s.serviceAmount = 0;
+        salaryMigrated = true;
+      }
+    });
+    if (salaryMigrated) {
+      saveData(STORAGE_KEYS.SALARIES, salaries);
+    }
+    // 数据迁移 v6.0：预约数据新增字段
+    const aptsV6 = loadData(STORAGE_KEYS.APPOINTMENTS);
+    let aptMigratedV6 = false;
+    aptsV6.forEach(apt => {
+      if (apt.nailRemoval === undefined) {
+        apt.nailRemoval = '无';
+        aptMigratedV6 = true;
+      }
+      if (apt.images === undefined) {
+        // 将旧的单图 nailImage 转为 images 数组
+        apt.images = apt.nailImage ? [apt.nailImage] : [];
+        aptMigratedV6 = true;
+      }
+      if (apt.endTime === undefined) {
+        apt.endTime = '';
+        aptMigratedV6 = true;
+      }
+      if (apt.nailType === undefined) {
+        // 从 service 中解析 nailType
+        const parts = apt.service ? apt.service.split(' · ') : [];
+        apt.nailType = parts[0] || '';
+        apt.style = parts[1] || '';
+        aptMigratedV6 = true;
+      }
+    });
+    if (aptMigratedV6) {
+      saveData(STORAGE_KEYS.APPOINTMENTS, aptsV6);
+    }
+    localStorage.setItem('nail_data_version', DATA_VERSION);
+  }
+  
+  initSampleData();
+  
+  // 设置头部日期
+  const now = new Date();
+  const dateStr = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日 ' + ['周日','周一','周二','周三','周四','周五','周六'][now.getDay()];
+  document.getElementById('headerDate').textContent = dateStr;
+  
+  // 检查是否移动端，初始化侧边栏状态
+  checkMobile();
+  
+  // 渲染首页
+  renderHome();
+  
+  // 1.5秒后隐藏开屏页
+  setTimeout(() => {
+    hideSplash();
+  }, 1500);
+}
+
+init();
+</script>
+</body>
+</html>
